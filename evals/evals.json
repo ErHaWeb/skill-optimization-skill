@@ -1,0 +1,56 @@
+{
+  "skill_name": "skill-optimization",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Optimize the skill at /mnt/skills/examples/skill-creator. Use audit-only mode.",
+      "expected_output": "A structured audit report listing all identified issues with severity ratings. No files are modified.",
+      "files": [],
+      "assertions": [
+        "Asks the user to confirm scope before starting, or proceeds with full directory as default",
+        "Does NOT modify any files",
+        "Produces a structured report with identified issues",
+        "Report includes at least one finding per major optimization dimension",
+        "Report is formatted according to the Output Report schema"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Run a full optimization on the skill at /tmp/test-skill.",
+      "expected_output": "A complete optimization run: audit report presented, user confirmation requested, changes applied in place, final report with Before/After metrics and QA gate results.",
+      "files": ["files/test-skill/"],
+      "assertions": [
+        "Clarifies execution mode and scope before starting",
+        "Completes Phase 1 and Phase 2 without modifying files",
+        "Presents a list of planned changes and asks for confirmation before Phase 3",
+        "After confirmation, applies changes in place",
+        "Produces a complete Output Report including Before/After metrics and QA gate results",
+        "Does not make cosmetic-only edits"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Optimize only the SKILL.md of the skill at /tmp/test-skill. Full optimization mode.",
+      "expected_output": "Optimization scoped to SKILL.md only. Cross-file issues are flagged as recommendations, not applied fixes.",
+      "files": ["files/test-skill/"],
+      "assertions": [
+        "Limits analysis and changes to SKILL.md only",
+        "Does not modify other files even if issues are detected in them",
+        "Flags cross-file issues as remaining recommendations",
+        "Report clearly states scope as SKILL.md only"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Audit the skill at /tmp/contradiction-skill and identify all contradictions.",
+      "expected_output": "Audit report with all contradictions between files listed, each with file references and severity.",
+      "files": ["files/contradiction-skill/"],
+      "assertions": [
+        "Detects contradictions between SKILL.md and agent.md",
+        "Lists each contradiction with file references and severity rating",
+        "Does not silently ignore any contradiction",
+        "Report section Structural Issues Identified is non-empty"
+      ]
+    }
+  ]
+}
