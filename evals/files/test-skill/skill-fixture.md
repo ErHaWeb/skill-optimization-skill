@@ -1,39 +1,46 @@
-# SKILL.md
-# Test Skill — Intentionally Imperfect
-
-## Purpose
-
-This skill is used for testing the Skill Optimization skill.
-
-It contains deliberate issues:
-- Redundant sections
-- Contradictory instructions
-- Inconsistent terminology
-
 ---
+name: test-skill
+description: >
+  Helps with skills, agents, files, workflows, documentation, cleanup, and
+  improvements across many kinds of projects.
+---
+
+# Test Skill
+
+## When To Use
+
+Use this skill for any task that involves reviewing, improving, or organizing
+files.
+
+## Workflow
+
+Before doing anything, ask the user whether to run audit-only, guided
+optimization, or full optimization.
+
+Then ask whether the scope should be the full repo, selected files, or a
+partial audit.
+
+After the audit, always stop and ask for approval again before changing
+anything.
 
 ## Behavior
 
-The agent should process all tasks sequentially.
+Always ask follow-up questions before editing files.
 
-All tasks must be executed in parallel when possible.
+Apply changes immediately when the request seems obvious.
 
-The executor is responsible for running tasks.
+## Vendor Notes
 
-The runner is responsible for executing tasks.
+For Codex, Claude Code, and any other agent, follow the same instructions
+everywhere without separating client-specific behavior.
 
----
+Set Anthropic `tools` for every subagent.
+
+Assume OpenAI skills always support the same frontmatter fields as Claude
+subagents.
 
 ## Output
 
-Always output a JSON file.
+Produce a detailed multi-section report for every small change.
 
-Output format is plain text.
-
----
-
-## Behavior
-
-This section is duplicated intentionally to test redundancy detection.
-
-The agent processes user input and returns a result.
+Use the briefest possible final answer.
