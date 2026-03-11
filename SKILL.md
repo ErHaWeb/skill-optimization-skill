@@ -64,7 +64,8 @@ looks like.
 ## What To Inspect
 
 1. Read `SKILL.md` first.
-2. Read `evals/` next if it exists, starting with `evals/evals.json`.
+2. Read `evals/` only when you may need to change skill behavior, scope
+   boundaries, or related support files; start with `evals/evals.json`.
 3. Open only the referenced or obviously relevant support files needed to
    preserve behavior.
 4. Use external docs only when vendor behavior or the skills standard materially
