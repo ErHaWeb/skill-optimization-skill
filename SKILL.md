@@ -63,7 +63,8 @@ looks like.
 
 ## What To Inspect
 
-1. Read `SKILL.md` first.
+1. Read the primary skill file first: usually `SKILL.md`, or the target
+   markdown file for a standalone subagent.
 2. Read `evals/` only when you may need to change skill behavior, scope
    boundaries, or related support files; start with `evals/evals.json`.
 3. Open only the referenced or obviously relevant support files needed to

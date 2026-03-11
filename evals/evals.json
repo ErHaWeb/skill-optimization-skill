@@ -93,6 +93,20 @@
         "Does not stretch into a skill-creation workflow",
         "Responds briefly with the boundary instead of inventing optimization steps"
       ]
+    },
+    {
+      "id": 8,
+      "prompt": "Tighten the standalone Claude Code subagent at /tmp/claude-subagent/release-notes-subagent.md so it triggers more reliably and stays narrowly scoped.",
+      "expected_output": "A focused optimization of the target subagent markdown file without assuming that a SKILL.md must exist.",
+      "files": [
+        "files/claude-subagent/"
+      ],
+      "assertions": [
+        "Reads the target subagent markdown file directly",
+        "Does not assume the optimization target must be SKILL.md",
+        "Preserves Claude-specific subagent structure while tightening activation or scope",
+        "Keeps changes focused instead of rewriting the subagent into a different skill format"
+      ]
     }
   ]
 }
