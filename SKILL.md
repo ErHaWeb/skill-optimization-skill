@@ -22,6 +22,10 @@ When priorities conflict, use this order:
 4. Keep the skill standard-first and isolate vendor-specific notes cleanly.
 5. Touch evals only when that closes a real behavioral gap.
 
+In practice, the highest-value optimizations usually come from clearer
+activation, tighter scope, shorter and more reproducible instructions, less
+meta or audit overhead, and a few well-chosen edits instead of broad rewrites.
+
 Treat the current skill as editable input, not as authority over what good
 looks like.
 
