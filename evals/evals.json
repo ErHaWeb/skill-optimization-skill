@@ -82,6 +82,17 @@
         "Does not invent broad rewrites, new process layers, or stale eval churn",
         "States plainly when no material change is warranted"
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "Create a brand-new skill for writing weekly release announcements.",
+      "expected_output": "A brief response explaining that this skill is for improving existing skills or subagents, not creating a new one from scratch.",
+      "files": [],
+      "assertions": [
+        "Recognizes that creating a new skill is out of scope",
+        "Does not stretch into a skill-creation workflow",
+        "Responds briefly with the boundary instead of inventing optimization steps"
+      ]
     }
   ]
 }
