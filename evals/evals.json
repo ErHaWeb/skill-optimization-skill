@@ -107,6 +107,17 @@
         "Preserves Claude-specific subagent structure while tightening activation or scope",
         "Keeps changes focused instead of rewriting the subagent into a different skill format"
       ]
+    },
+    {
+      "id": 9,
+      "prompt": "List the available skills in this repository and tell me how to run the test-skill without changing any files.",
+      "expected_output": "A brief response explaining that this skill is for improving existing skills or subagents, not listing, installing, or running them.",
+      "files": [],
+      "assertions": [
+        "Recognizes that the request is about using or inspecting skills rather than optimizing one",
+        "Does not stretch into a list, install, or run workflow",
+        "Responds briefly with the boundary instead of inventing optimization steps"
+      ]
     }
   ]
 }
