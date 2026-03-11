@@ -69,6 +69,19 @@
         "Does not stretch scope to generic repository or documentation cleanup",
         "Responds briefly instead of inventing a skill-optimization workflow"
       ]
+    },
+    {
+      "id": 6,
+      "prompt": "Review the skill at /tmp/good-skill and improve it only if there is a material gain in activation, scope, or instruction quality.",
+      "expected_output": "A brief response explaining that no substantial optimization is needed, or only a truly minimal improvement if one is clearly justified.",
+      "files": [
+        "files/good-skill/"
+      ],
+      "assertions": [
+        "Recognizes when the existing skill is already clear and narrowly scoped",
+        "Does not invent broad rewrites, new process layers, or stale eval churn",
+        "States plainly when no material change is warranted"
+      ]
     }
   ]
 }

@@ -189,6 +189,8 @@ After editing, give a compact report that includes:
 - the 3 to 5 most important changes and why they mattered
 - the sources actually used, if any
 - any remaining risks or follow-up recommendations
+- if no material change was warranted, say that plainly instead of
+  manufacturing edits
 
 Do not dump full file contents unless the user asks.
 
