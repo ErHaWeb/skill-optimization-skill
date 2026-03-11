@@ -52,9 +52,9 @@ looks like.
 - Work directly in the repository when writes are allowed.
 - Do not force an audit-only mode, multi-phase approval flow, or pre-edit
   confirmation unless the user asked for it or the action is risky.
-- Default to the smallest file set that can solve the problem. Start with
-  `SKILL.md`; touch `evals/`, fixtures, or supporting files only when they
-  would otherwise become stale or misleading.
+- Default to the smallest file set that can solve the problem. Start with the
+  primary skill file; touch `evals/`, fixtures, or supporting files only when
+  they would otherwise become stale or misleading.
 - If the request turns out to be out of scope after the first file read, say so
   briefly and stop instead of stretching the skill to fit.
 - Ask follow-up questions only when the target skill is ambiguous or the scope
