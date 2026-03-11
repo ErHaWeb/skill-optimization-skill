@@ -55,6 +55,8 @@ looks like.
 - Default to the smallest file set that can solve the problem. Start with
   `SKILL.md`; touch `evals/`, fixtures, or supporting files only when they
   would otherwise become stale or misleading.
+- If the request turns out to be out of scope after the first file read, say so
+  briefly and stop instead of stretching the skill to fit.
 - Ask follow-up questions only when the target skill is ambiguous or the scope
   would be unsafe to assume.
 - Prefer workable defaults over process mechanics.

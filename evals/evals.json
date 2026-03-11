@@ -58,6 +58,17 @@
         "Touches evals only when they are stale or misaligned with the revised skill",
         "Summarizes the key changes and their rationale"
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "Clean up the general repository documentation, but do not change any skill or subagent files.",
+      "expected_output": "A brief out-of-scope response explaining that this skill is for optimizing skills or subagents, not generic repo documentation.",
+      "files": [],
+      "assertions": [
+        "Recognizes that the request is not centered on optimizing a skill or subagent",
+        "Does not stretch scope to generic repository or documentation cleanup",
+        "Responds briefly instead of inventing a skill-optimization workflow"
+      ]
     }
   ]
 }
