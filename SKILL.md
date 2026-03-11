@@ -184,10 +184,10 @@ Before finishing, check:
 
 ## Output
 
-After editing, give a compact report that includes:
+After the review, give a compact report that includes:
 - the main strengths and weaknesses of the previous skill
 - the files changed
-- the 3 to 5 most important changes and why they mattered
+- the 3 to 5 most important changes and why they mattered, if any
 - the sources actually used, if any
 - any remaining risks or follow-up recommendations
 - if no material change was warranted, say that plainly instead of
