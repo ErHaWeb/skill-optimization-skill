@@ -25,6 +25,9 @@ content.
   and `agents/` when they exist.
 - If `agents/openai.yaml` exists, keep it aligned when the skill's activation
   surface or default workflow changes materially.
+- The target keeps its routine context footprint intentionally small.
+  `SKILL.md` should avoid mandatory broad reads, duplicated rules, or verbose
+  default output scaffolding unless they materially improve behavior.
 
 ## Additional Baseline For Complex Skills
 
@@ -68,11 +71,24 @@ Do not add `.idea` just to satisfy a checklist.
 - Prefer stable, text-based fixtures over opaque binary inputs when either would
   work.
 
+## Context Footprint Contract
+
+Treat token efficiency as a quality contract, not as optional polish.
+
+- Reduce default read sets, duplicated instructions, and verbose reporting
+  requirements when behavior stays intact.
+- Prefer on-demand support-file reads over mandatory bulk loading.
+- Do not move bloat into new support files unless the moved content is reused
+  or clearly too large for `SKILL.md`.
+- Never save tokens by removing activation boundaries, determinism, QA
+  contracts, or safety-critical guidance.
+
 ## When To Edit Versus Report
 
 Edit locally when the fix is small, deterministic, and clearly inside the
 target skill. Examples: adding a missing `.gitignore`, linking a verifier from
-`SKILL.md`, adding a minimal eval, or narrowing an inspection exception.
+`SKILL.md`, adding a minimal eval, narrowing an inspection exception, or
+removing duplicated instructions and unnecessary read requirements.
 
 Report instead of editing when the missing quality measure would require:
 
@@ -89,5 +105,6 @@ Stop the optimization loop when another pass would only:
 - reorder sections for taste only
 - add meta-process text without increasing determinism or safety
 - create new QA layers that do not close a real gap
+- chase extra token savings that would weaken behavior or clarity
 
 At that point, say plainly that no substantial change remains.

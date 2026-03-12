@@ -200,6 +200,20 @@
         "Keeps the changes inside the target skill instead of widening scope",
         "Does not ignore agent metadata drift when activation or defaults changed materially"
       ]
+    },
+    {
+      "id": 16,
+      "prompt": "Optimize the skill at /tmp/token-heavy-skill so routine use consumes fewer tokens while keeping activation, scope, and QA behavior intact.",
+      "expected_output": "A focused optimization that treats context footprint as a real quality contract, cuts unnecessary reads or verbose scaffolding, and preserves the skill's actual behavior.",
+      "files": [
+        "files/token-heavy-skill/"
+      ],
+      "assertions": [
+        "Treats token usage or context footprint as a real quality issue rather than cosmetic polish",
+        "Reduces unnecessary mandatory reads, duplicated guidance, or verbose output scaffolding",
+        "Preserves activation boundaries, scope control, and real QA behavior while reducing token cost",
+        "Does not weaken safety or machine-checkable QA just to save tokens"
+      ]
     }
   ]
 }

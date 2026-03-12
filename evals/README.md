@@ -5,6 +5,7 @@ These evals defend the core behavior of `skill-optimization`.
 They cover:
 
 - activation and scope boundaries
+- context-footprint reduction without behavioral drift
 - smallest-useful edit behavior
 - target-only change discipline
 - generic QA baseline checks
@@ -17,6 +18,7 @@ When QA guidance changes, prefer scenarios that exercise:
 
 - missing `.gitignore` or local hygiene coverage
 - missing or weak machine-checkable QA contracts
+- token-heavy `SKILL.md` files with mandatory broad reads or verbose defaults
 - support files that are present but not linked from `SKILL.md`
 - overly broad `.idea` inspection suppression
 - stale `agents/openai.yaml` metadata after trigger-surface changes
