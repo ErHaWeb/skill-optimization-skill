@@ -1,0 +1,9 @@
+interface:
+  display_name: "Skill Optimization"
+  short_description: "Tighten an existing skill or subagent in place"
+  default_prompt: >-
+    Use $skill-optimization to improve an existing skill or subagent in place:
+    tighten activation, narrow scope, reduce context footprint, harden
+    reproducibility, and align support files or QA contracts. If a recurring
+    optimization heuristic is still too vague to apply safely, clarify that
+    pattern here first instead of exporting ambiguity into the target skill.

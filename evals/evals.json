@@ -214,6 +214,18 @@
         "Preserves activation boundaries, scope control, and real QA behavior while reducing token cost",
         "Does not weaken safety or machine-checkable QA just to save tokens"
       ]
+    },
+    {
+      "id": 17,
+      "prompt": "Improve an existing skill, but only by applying a recurring optimization pattern that you notice is still not clearly defined in your own optimization guidance.",
+      "expected_output": "A self-critical optimization pass that does not export the vague pattern into the target skill unchanged.",
+      "files": [],
+      "assertions": [
+        "Treats unclear recurring optimization heuristics as a gap in the optimization skill itself",
+        "Does not degrade the target skill by applying a vague undocumented pattern",
+        "Clarifies or reports the missing optimization standard before relying on it",
+        "Keeps target-skill edits limited to clearly justified improvements"
+      ]
     }
   ]
 }

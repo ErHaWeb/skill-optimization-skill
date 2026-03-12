@@ -24,6 +24,12 @@ When priorities conflict, use this order:
 
 Treat the current skill as input, not authority.
 
+If you notice that this optimization skill relies on a fuzzy recurring pattern
+that is not clearly defined here, do not push that ambiguity into the target
+skill. Tighten the pattern here first when this skill itself is in scope;
+otherwise report the ambiguity briefly and keep the target-skill edit limited
+to clearly justified improvements.
+
 Run the work as a short loop:
 1. Read the baseline files and cluster the real weaknesses.
 2. Fix only the 1 to 3 highest-impact gaps in that pass.
@@ -84,6 +90,9 @@ Run the work as a short loop:
    contract.
 5. Use external docs only when vendor behavior or the skills standard materially
    affects the edit.
+6. If your intended change depends on an internal optimization pattern that is
+   still underspecified in this skill, clarify or narrow that pattern here
+   first instead of silently exporting it into the target skill.
 
 ## High-Value Checks
 
@@ -157,6 +166,8 @@ Run this loop until no substantial change remains:
 2. Choose only the 1 to 3 highest-impact weaknesses for the current pass.
    A change is substantial only if it improves behavior, determinism, scope
    clarity, QA defense, safe defaults, or context efficiency.
+   If the intended fix depends on a vague optimization pattern from this skill,
+   harden that pattern here before applying it elsewhere.
 3. Make the smallest edit set that closes those weaknesses.
    Prefer `SKILL.md` first. Touch `references/`, `evals/`, fixtures, or docs
    only when they would otherwise stay stale, misleading, or untestable.
@@ -199,6 +210,10 @@ Run this loop until no substantial change remains:
   official Anthropic docs, Agent Skills, then Cursor as a portability check.
   If sources stay inconclusive, make the smallest reasonable decision and note
   it briefly.
+- Treat recurring optimization heuristics as part of this skill's contract, not
+  as hidden operator taste. If a heuristic matters repeatedly and is still too
+  vague to apply safely, clarify it here before using it to reshape another
+  skill.
 
 ## Evals
 
@@ -249,3 +264,6 @@ Do not dump full file contents unless the user asks.
   execution quality.
 - No edits outside the requested target skill or subagent unless the user
   explicitly broadens scope.
+- No exporting of vague internal optimization patterns into a target skill.
+  Tighten those patterns here first or report the gap instead of degrading the
+  target.
