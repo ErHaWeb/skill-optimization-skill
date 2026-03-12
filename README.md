@@ -10,6 +10,7 @@ or its vendor-specific details are mixed into otherwise portable guidance.
 This repository contains:
 
 - `SKILL.md`: the machine-facing instructions used by the agent
+- `references/`: compact reusable guidance for generic skill QA
 - `evals/`: small regression scenarios that protect the intended behavior
 
 ## What This Skill Does
@@ -24,7 +25,8 @@ Its main priorities are:
 3. make instructions shorter, more operational, and more reproducible
 4. keep portable guidance separate from OpenAI/Codex and Anthropic/Claude Code
    specifics
-5. touch evals only when that closes a real gap
+5. enforce a small, generic QA baseline when it materially helps
+6. touch evals only when that closes a real gap
 
 In practice, this means the skill prefers focused repairs over broad rewrites.
 If a skill is already good enough, it should say so instead of inventing
@@ -44,6 +46,10 @@ Typical problems it is meant to fix:
 - the skill tries to cover too many adjacent tasks
 - the instructions are repetitive, vague, or overly process-heavy
 - vendor-neutral rules and vendor-specific notes are mixed together
+- support files exist but are not linked from `SKILL.md`
+- `.gitignore`, evals, verifier scripts, or deterministic fixtures are missing
+  or weak
+- `.idea` inspection exceptions are absent, too broad, or undocumented
 - the evals no longer match the real behavior of the skill
 
 ## What This Skill Is Not For
@@ -60,12 +66,16 @@ Do not use it for:
 At a high level, the skill:
 
 1. reads the primary skill file first
-2. inspects only the files needed for a safe, focused change
-3. improves the most important 1 to 3 weaknesses
-4. stops once the meaningful issues are addressed
+2. checks the local QA surface such as `.gitignore`, evals, support files, and
+   committed `.idea` settings when present
+3. clusters the highest-value weaknesses
+4. improves only the most important 1 to 3 issues in that pass
+5. re-reviews the result against the same checklist
+6. stops once the remaining ideas are cosmetic rather than behavioral
 
 It intentionally avoids heavy audit rituals, mandatory confirmation loops, and
-large repo-wide rewrites unless they are actually necessary.
+large repo-wide rewrites unless they are actually necessary. All changes stay
+inside the target skill or subagent unless the user explicitly broadens scope.
 
 ## Supported Targets
 
@@ -128,12 +138,18 @@ Clean up the whole repository documentation.
 
 ```text
 SKILL.md
+references/
+  skill-quality-baseline.md
 evals/
+  README.md
   evals.json
   files/
 ```
 
 - `SKILL.md` is the actual skill definition
+- `references/skill-quality-baseline.md` holds the generic QA checklist used for
+  skill hardening
+- `evals/README.md` summarizes what the eval scenarios defend
 - `evals/evals.json` contains regression scenarios
 - `evals/files/` contains small fixtures used by those scenarios
 
@@ -144,6 +160,7 @@ This skill is opinionated in a few specific ways:
 - minimality beats completeness
 - clear scope beats broad ambition
 - reproducible instructions beat abstract process language
+- deterministic QA beats ceremonial QA
 - a few good edits beat endless meta-optimization
 - no-op is a valid outcome when no real improvement is justified
 

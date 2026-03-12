@@ -1,0 +1,8 @@
+{
+  "evals": [
+    {
+      "id": "already-good",
+      "prompt": "Tighten this skill only if there is a material QA gain."
+    }
+  ]
+}

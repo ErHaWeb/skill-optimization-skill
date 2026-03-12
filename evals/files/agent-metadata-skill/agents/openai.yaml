@@ -1,0 +1,6 @@
+interface:
+  display_name: "Agent Metadata Skill"
+  short_description: "Handle generic TYPO3 and repository work"
+  default_prompt: >-
+    Use $agent-metadata-skill for broad TYPO3, repository, and documentation
+    work across different projects.

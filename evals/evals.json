@@ -118,6 +118,88 @@
         "Does not stretch into a list, install, or run workflow",
         "Responds briefly with the boundary instead of inventing optimization steps"
       ]
+    },
+    {
+      "id": 10,
+      "prompt": "Harden the skill at /tmp/missing-qa-skill. It has no local .gitignore, a committed node_modules directory, and helper files that are not linked from the skill text. Keep all changes inside that skill only.",
+      "expected_output": "A focused target-local hardening pass that adds or recommends local hygiene coverage, links the support files from the skill, and avoids broad repository cleanup.",
+      "files": [
+        "files/missing-qa-skill/"
+      ],
+      "assertions": [
+        "Recognizes missing local hygiene or .gitignore coverage as a skill-quality issue",
+        "Treats committed dependency or editor noise as a local quality problem instead of normal project state",
+        "Links relevant support files from the skill text when they matter",
+        "Keeps the change set inside the target skill instead of widening scope"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Improve the skill at /tmp/verifier-gap-skill so its quality checks are more deterministic. The directory already has a verifier script and fixture, but the skill text does not explain when to use them and there is no clear machine-checkable QA contract.",
+      "expected_output": "A small hardening pass that reuses the existing verifier and fixture, links them from the skill, and adds only the minimum extra QA structure needed to make the contract clear.",
+      "files": [
+        "files/verifier-gap-skill/"
+      ],
+      "assertions": [
+        "Recognizes the existing verifier script and fixture as reusable QA building blocks",
+        "Strengthens machine-checkable QA without inventing a heavy new process",
+        "Links scripts or fixtures directly from the skill instructions or closely related support files",
+        "Keeps changes minimal and target-local"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Tighten the IDE inspection setup for /tmp/inspection-skill. The PHP fixture intentionally triggers a naming false positive, but the current .idea configuration disables the inspection too broadly.",
+      "expected_output": "A narrow, documented inspection adjustment that keeps the false-positive exception local to the affected fixture instead of globally suppressing the inspection.",
+      "files": [
+        "files/inspection-skill/"
+      ],
+      "assertions": [
+        "Treats .idea as optional and only keeps it when it solves a real local problem",
+        "Replaces or recommends replacing blanket suppression with a narrow scope-based exception",
+        "Documents the reason for the inspection exception when that structure exists",
+        "Does not generalize the exception beyond the affected fixture"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Review the standalone skill at /tmp/repo-less-skill for generic QA improvements. The directory is not in a Git repository yet.",
+      "expected_output": "A compact response or edit set that reports the missing Git context as a quality gap, improves only what is still locally safe, and does not initialize a repository unless asked.",
+      "files": [
+        "files/repo-less-skill/"
+      ],
+      "assertions": [
+        "Recognizes missing Git context as a relevant quality signal",
+        "Does not initialize a new repository or widen scope without an explicit request",
+        "Still looks for local, target-only improvements that are safe and useful"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Run another optimization pass on /tmp/loop-stable-skill and continue only if you still find a material gain in activation, scope, reproducibility, or generic QA.",
+      "expected_output": "A re-review that stops cleanly when only cosmetic changes remain, or a truly minimal change if a concrete behavioral gap is still present.",
+      "files": [
+        "files/loop-stable-skill/"
+      ],
+      "assertions": [
+        "Re-reviews the current state instead of assuming more edits are always needed",
+        "Treats no-op as a valid outcome after the loop has converged",
+        "Does not manufacture extra QA layers when no substantial gap remains"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Harden the skill at /tmp/agent-metadata-skill. The SKILL.md trigger surface changed, but agents/openai.yaml still describes the old behavior, and the directory contains a local .claude/worktrees mirror. Keep the work target-local.",
+      "expected_output": "A focused optimization that realigns agent metadata with the current skill behavior, treats the worktree mirror as a local hygiene issue, and avoids repo-wide cleanup.",
+      "files": [
+        "files/agent-metadata-skill/"
+      ],
+      "assertions": [
+        "Recognizes stale agents/openai.yaml metadata as a real skill-quality issue",
+        "Treats local worktree mirrors such as /.claude/worktrees as hygiene artifacts unless intentionally versioned",
+        "Keeps the changes inside the target skill instead of widening scope",
+        "Does not ignore agent metadata drift when activation or defaults changed materially"
+      ]
     }
   ]
 }
