@@ -31,6 +31,9 @@ Its main priorities are:
 In practice, this means the skill prefers focused repairs over broad rewrites.
 If a skill is already good enough, it should say so instead of inventing
 changes.
+If a recurring optimization heuristic is still too vague to apply safely, the
+skill should tighten or report that heuristic first instead of exporting the
+ambiguity into the target skill.
 
 ## What This Skill Is For
 
@@ -161,6 +164,7 @@ This skill is opinionated in a few specific ways:
 - clear scope beats broad ambition
 - reproducible instructions beat abstract process language
 - deterministic QA beats ceremonial QA
+- self-critical heuristic hardening beats undocumented operator taste
 - a few good edits beat endless meta-optimization
 - no-op is a valid outcome when no real improvement is justified
 

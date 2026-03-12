@@ -10,6 +10,7 @@ They cover:
 - target-only change discipline
 - generic QA baseline checks
 - loop termination when only cosmetic changes remain
+- self-critical hardening of vague recurring optimization heuristics
 - agent metadata drift and local tool-artifact hygiene
 
 Use the smallest set of scenarios that matches the behavior you changed.
