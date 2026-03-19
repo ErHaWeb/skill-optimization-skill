@@ -124,11 +124,12 @@
     {
       "id": 10,
       "prompt": "Harden the skill at /tmp/missing-qa-skill. It has no local .gitignore, a committed node_modules directory, and helper files that are not linked from the skill text. Keep all changes inside that skill only.",
-      "expected_output": "A focused target-local hardening pass that adds or recommends local hygiene coverage, links the support files from the skill, and avoids broad repository cleanup.",
+      "expected_output": "A focused target-local hardening pass that uses deterministic local surface inventory where available, adds or recommends local hygiene coverage, links the support files from the skill, and avoids broad repository cleanup.",
       "files": [
         "files/missing-qa-skill/"
       ],
       "assertions": [
+        "Uses the local support-audit helper or another deterministic inventory step before broad manual QA scanning when a local skill directory is available",
         "Recognizes missing local hygiene or .gitignore coverage as a skill-quality issue",
         "Treats committed dependency or editor noise as a local quality problem instead of normal project state",
         "Links relevant support files from the skill text when they matter",
@@ -243,6 +244,20 @@
         "Does not require a Claude Code tools field when unrestricted inheritance is valid",
         "Keeps local examples and neighboring skills subordinate to official vendor rules",
         "Avoids adding extra process or repo-wide cleanup while making the vendor-specific fix"
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "Optimize the skill at /tmp/script-first-skill. Its SKILL.md tells the model to normalize a changelog, rename frontmatter keys, and render a release summary from stable local files even though the directory already contains a helper script that could own the deterministic transformation. Keep the work target-local.",
+      "expected_output": "A focused optimization that wires the deterministic transformation into a local script or wrapper contract, updates the skill text to call that path, and leaves the model responsible only for orchestration or unresolved judgment.",
+      "files": [
+        "files/script-first-skill/"
+      ],
+      "assertions": [
+        "Treats scriptable deterministic execution as a real optimization target rather than acceptable prompt prose",
+        "Prefers reusing or wiring a target-local script or wrapper when stable inputs, rules, and outputs already exist",
+        "Keeps model-written instructions for orchestration, interpretation, or unresolved judgment instead of reenacting the deterministic transformation",
+        "Keeps changes target-local and does not invent heavy infrastructure"
       ]
     }
   ]

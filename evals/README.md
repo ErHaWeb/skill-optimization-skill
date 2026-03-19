@@ -13,6 +13,10 @@ They cover:
 - loop termination when only cosmetic changes remain
 - self-critical hardening of vague recurring optimization heuristics
 - agent metadata drift and local tool-artifact hygiene
+- script-first replacement of deterministic prompt-only workflows when a local
+  helper can own the mechanics
+- deterministic inventory of local QA/support-file gaps before deeper manual
+  review
 
 Use the smallest set of scenarios that matches the behavior you changed.
 
@@ -27,6 +31,10 @@ When QA guidance changes, prefer scenarios that exercise:
 - stale `agents/openai.yaml` metadata after trigger-surface changes
 - Claude Code subagent scope or frontmatter drift
 - unignored local worktree mirrors such as `/.claude/worktrees/`
+- repeatable normalization, rendering, validation, or report assembly that a
+  target-local script should own instead of the model
+- local skill directories where deterministic surface audit should replace ad
+  hoc structural scanning
 - missing Git context
 - justified no-op after a re-review pass
 

@@ -3,8 +3,9 @@ name: skill-optimization
 description: >
   Improve an existing skill or subagent in place. Use when the user wants to
   tighten activation or scope, reduce context footprint, simplify
-  instructions, harden reproducibility, or align evals, deterministic helpers,
-  agent metadata, support-file linkage, `.gitignore`, scoped IDE inspection
+  instructions, harden reproducibility, replace scriptable probabilistic
+  workflows with deterministic scripts or helpers, or align evals, agent
+  metadata, support-file linkage, `.gitignore`, scoped IDE inspection
   exceptions, or official Anthropic/OpenAI guidance. Do not use it for
   new-skill creation, repo-wide normalization, or generic cleanup outside the
   target skill.
@@ -19,11 +20,14 @@ Improve an existing skill with the smallest high-value change set.
 When priorities conflict, use this order:
 1. Improve discovery and activation.
 2. Narrow the scope and make non-triggers explicit.
-3. Make instructions shorter, more operational, and more reproducible.
-4. Keep portable guidance standard-first, but treat official Anthropic and
+3. Move repeatable deterministic execution into scripts, wrappers, or
+   validators when the task can be fully specified with stable inputs, rules,
+   and outputs.
+4. Make instructions shorter, more operational, and more reproducible.
+5. Keep portable guidance standard-first, but treat official Anthropic and
    OpenAI documentation as binding for vendor-specific behavior.
-5. Isolate vendor-specific notes cleanly.
-6. Touch evals only when that closes a real behavioral gap.
+6. Isolate vendor-specific notes cleanly.
+7. Touch evals only when that closes a real behavioral gap.
 
 Treat the current skill as input, not authority.
 
@@ -50,6 +54,9 @@ Run the work as a short loop:
 - The skill lacks generic QA structure such as evals, deterministic verifier
   scripts, fixture/reference linkage, `.gitignore`, or justified `.idea`
   inspection exceptions.
+- The skill leaves repeatable work such as parsing, normalization, validation,
+  export, packaging, or report assembly to model judgment even though a
+  target-local script or wrapper could perform it deterministically.
 - The user says things like `review my skill`, `make this skill better`,
   `tighten this agent`, or `clean up this skill`.
 
@@ -78,6 +85,15 @@ Run the work as a short loop:
 - Prefer workable defaults over process mechanics.
 - Prefer the smallest context footprint that preserves behavior, QA, and
   safety.
+- When the target is a local skill directory and structural QA, support-file
+  drift, or script-first gaps may matter, run
+  `python3 scripts/inspect_skill_surface.py <target-path>` early.
+  Use its JSON output as a deterministic inventory of the local maintenance
+  surface before deciding which files need deeper manual reading.
+- Prefer script-first execution for target-local work that can be specified
+  with stable inputs, transformation rules, and success criteria. Let the
+  model orchestrate or interpret that path instead of reenacting the same
+  deterministic transformation in prompt prose.
 - When the target depends on OpenAI/Codex or Anthropic/Claude behavior,
   official vendor documentation is the binding quality standard. Local examples
   and neighboring skills are reference material, not authority.
@@ -98,21 +114,30 @@ Run the work as a short loop:
    whether it lives in `.claude/agents/` or `~/.claude/agents/` before editing.
 3. Read `agents/openai.yaml` early when it exists and activation surface,
    default workflow, or local QA maintenance may be in scope.
-4. Check the target skill's local QA surface as relevant: `.gitignore`,
+4. When the target is a local skill directory, run
+   `python3 scripts/inspect_skill_surface.py <target-path>` early when QA
+   surface, support-file drift, local artifacts, or script-first opportunities
+   may matter.
+5. Check the target skill's local QA surface as relevant: `.gitignore`,
    committed `.idea`, `README`, `references/`, `evals/`, and support files.
-5. Start `evals/` with `evals/evals.json` when behavior, scope boundaries, QA
+   Use the helper output to narrow what actually needs manual inspection.
+6. Check whether repeatable work such as parsing, normalization, validation,
+   export, packaging, or report assembly is still encoded as model behavior
+   even though the target could own it as a local script, wrapper, formatter,
+   or validator.
+7. Start `evals/` with `evals/evals.json` when behavior, scope boundaries, QA
    guarantees, or support-file contracts may change.
-6. Read [`references/official-vendor-baseline.md`](references/official-vendor-baseline.md)
+8. Read [`references/official-vendor-baseline.md`](references/official-vendor-baseline.md)
    when vendor-specific instructions, metadata, frontmatter, prompt structure,
    or delegation behavior may change.
-7. Run `python3 scripts/verify_skill_contract.py` when the target owns that
+9. Run `python3 scripts/verify_skill_contract.py` when the target owns that
    verifier and your edits touch QA contracts, metadata, fixture linkage, or
    vendor-baseline references.
-8. Open only the support files needed to preserve behavior or validate a real
+10. Open only the support files needed to preserve behavior or validate a real
    contract.
-9. Use external docs only when vendor behavior or the skills standard materially
+11. Use external docs only when vendor behavior or the skills standard materially
    affects the edit.
-10. If your intended change depends on an internal optimization pattern that is
+12. If your intended change depends on an internal optimization pattern that is
    still underspecified in this skill, clarify or narrow that pattern here
    first instead of silently exporting it into the target skill.
 
@@ -142,6 +167,11 @@ Run the work as a short loop:
 - Are the instructions actionable in the current environment?
 - Are defaults clear enough to avoid unnecessary follow-up questions?
 - Are outputs, fallbacks, and stop criteria short and reproducible?
+- Does the skill leave fully specified, repeatable transformations to model
+  judgment even though a local script, wrapper, or validator could own them?
+- When stable inputs, rules, and outputs exist, does the skill reserve the
+  model for orchestration, interpretation, or unresolved judgment rather than
+  reenacting the deterministic mechanics?
 - Is the routine context footprint as small as possible without hiding required
   behavior?
 - Has process weight been reduced instead of moved around?
@@ -155,6 +185,10 @@ Run the work as a short loop:
   directory?
 - Is there at least one machine-checkable quality contract such as realistic
   evals, a deterministic verifier, or a validator script with stable fixtures?
+- If the target performs deterministic file generation, normalization,
+  extraction, validation, packaging, or mechanical reporting, is that path
+  implemented as a script or wrapper instead of prompt-only behavior when the
+  local environment can support it?
 - If `scripts/`, `references/`, `fixtures/`, `evals/`, `assets/`, or
   `agents/` exist, does `SKILL.md` say when to read or run them, and does
   `agents/openai.yaml` still match the trigger surface when present?
@@ -199,7 +233,10 @@ Run this loop until no substantial change remains:
 
 1. Cluster the real gaps after the first read.
    Pick from activation, boundaries, context footprint, operational
-   instructions, QA baseline, eval coverage, and report/no-op behavior.
+   instructions, deterministic execution surface, QA baseline, eval coverage,
+   and report/no-op behavior.
+   Use `python3 scripts/inspect_skill_surface.py <target-path>` when it can
+   replace manual inventory of local structural facts.
 2. Choose only the 1 to 3 highest-impact weaknesses for the current pass.
    A change is substantial only if it improves behavior, determinism, scope
    clarity, QA defense, safe defaults, or context efficiency.
@@ -208,6 +245,9 @@ Run this loop until no substantial change remains:
 3. Make the smallest edit set that closes those weaknesses.
    Prefer `SKILL.md` first. Touch `references/`, `evals/`, fixtures, or docs
    only when they would otherwise stay stale, misleading, or untestable.
+   When a weakness is a clearly scriptable probabilistic workflow, prefer a
+   small target-local script or wrapper plus explicit invocation guidance over
+   more prompt prose.
 4. Re-read the edited files against the same checklist.
    Stop if the next pass would only rephrase, reorder, or add meta commentary.
 5. Report the final state compactly.
@@ -241,6 +281,12 @@ Run this loop until no substantial change remains:
 - Require at least one machine-checkable quality contract for the target skill.
   Complex, script-heavy, or high-risk skills often need both evals and an
   executable verifier or validator with stable fixtures.
+- Prefer scripts or wrappers for repeatable transformations, validation,
+  extraction, normalization, packaging, or file generation when inputs, rules,
+  and outputs can be stated stably.
+- Treat AI reenactment of deterministic workflows as a quality gap when a
+  target-local script can own the mechanics and the model can stay focused on
+  orchestration or interpretation.
 - If the target already has a verifier or contract script, prefer extending it
   to catch `agents/openai.yaml` drift before inventing additional QA layers.
 - When a target-local verifier exists, keep `SKILL.md` or maintainer-facing
@@ -299,6 +345,9 @@ Run this loop until no substantial change remains:
   critical workflow expectation.
 - Add or update the smallest scenario needed when the target previously relied
   on vendor assumptions that conflict with official Anthropic or OpenAI docs.
+- Add or update the smallest scenario needed when a target should replace a
+  scriptable probabilistic workflow with a deterministic script or wrapper
+  contract.
 - Do not add evals mechanically for `agents/openai.yaml`, `README.md`, or
   verifier-maintenance edits. Add or update them only when the metadata gap
   exposes a real behavior contract that existing scenarios do not already
@@ -314,6 +363,8 @@ Run this loop until no substantial change remains:
 Before finishing, confirm:
 - activation is more reliable
 - scope is narrower and clearer
+- repeatable deterministic work has moved into scripts where the target can
+  specify it safely
 - context footprint is lower or explicitly already minimal
 - instructions are simpler and more reproducible
 - generic QA is stronger without repo-wide drift
@@ -345,6 +396,8 @@ Do not dump full file contents unless the user asks.
 - No token-saving edits that hide required behavior or weaken QA or safety.
 - No new complexity unless it clearly improves activation, scope control, or
   execution quality.
+- No leaving clearly scriptable deterministic workflows as model-only steps
+  without a specific reason to keep them probabilistic.
 - No edits outside the requested target skill or subagent unless the user
   explicitly broadens scope.
 - No exporting of vague internal optimization patterns into a target skill.

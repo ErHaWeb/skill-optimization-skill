@@ -24,6 +24,12 @@ content.
   - `evals/evals.json` with realistic prompts and sharp assertions
   - a deterministic verifier or validator script with stable input data
   - a script-plus-fixture contract that is explicitly referenced from the skill
+- The target moves repeatable deterministic execution into scripts or wrappers
+  when stable inputs, rules, and success criteria exist.
+  Examples include normalization, rendering, validation, extraction,
+  packaging, and mechanical report assembly.
+  Do not leave that work in prompt prose when a target-local script can own it
+  and the model can orchestrate or interpret the result.
 - `SKILL.md` tells the agent when to read or run support files that affect
   behavior.
   This applies to `scripts/`, `references/`, `fixtures/`, `evals/`, `assets/`,
@@ -67,6 +73,9 @@ Complex skills should usually have:
 - realistic evals that defend activation, scope, and workflow boundaries
 - an executable verifier or validator when output determinism matters
 - stable fixtures or reference files that make the verifier repeatable
+- a small target-local script or wrapper for deterministic generation,
+  normalization, export, or validation, with the model reserved for
+  orchestration or irreducibly semantic judgment
 - a short README or eval note when future maintainers would otherwise miss the
   contract
 
@@ -112,6 +121,8 @@ Treat token efficiency as a quality contract, not as optional polish.
   or clearly too large for `SKILL.md`.
 - Never save tokens by removing activation boundaries, determinism, QA
   contracts, or safety-critical guidance.
+- Replacing deterministic prompt prose with a small local script is a valid
+  optimization when it improves both reproducibility and context footprint.
 
 ## When To Edit Versus Report
 
@@ -122,7 +133,8 @@ extending an existing verifier to catch metadata drift, tightening Claude Code
 subagent frontmatter or scope handling, adding a minimal eval, narrowing an
 inspection exception, or removing duplicated instructions and unnecessary read
 requirements. The same applies when replacing stale local vendor assumptions
-with the official Anthropic or OpenAI rule.
+with the official Anthropic or OpenAI rule, or when wiring a small
+target-local script or wrapper in place of deterministic prompt-only work.
 
 Report instead of editing when the missing quality measure would require:
 

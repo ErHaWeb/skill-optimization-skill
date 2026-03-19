@@ -6,6 +6,10 @@ subagents.
 It is designed for situations where a skill already exists, but its activation
 is too broad, its scope is blurry, its instructions are too long or too vague,
 or its vendor-specific details are mixed into otherwise portable guidance.
+A core optimization heuristic is script-first determinization: if a target
+skill asks the model to perform repeatable work that can be fully specified,
+the skill should prefer a local script, wrapper, or verifier contract and let
+the model orchestrate or interpret the result.
 
 This repository contains:
 
@@ -16,6 +20,8 @@ This repository contains:
 - `references/official-vendor-baseline.md`: the binding Anthropic/OpenAI
   quality baseline for vendor-specific behavior
 - `evals/`: small regression scenarios that protect the intended behavior
+- `scripts/inspect_skill_surface.py`: a deterministic inventory helper for
+  local skill QA surface, support-file coverage, and obvious structural gaps
 - `scripts/verify_skill_contract.py`: a deterministic contract check for
   maintainer-facing metadata, fixtures, and reference alignment
 
@@ -28,13 +34,15 @@ Its main priorities are:
 
 1. make activation more reliable
 2. narrow the scope and clarify non-triggers
-3. make instructions shorter, more operational, and more reproducible
-4. keep portable guidance separate from OpenAI/Codex and Anthropic/Claude Code
+3. move repeatable deterministic execution out of prompt prose and into local
+   scripts, wrappers, or validators when the task can be fully specified
+4. make instructions shorter, more operational, and more reproducible
+5. keep portable guidance separate from OpenAI/Codex and Anthropic/Claude Code
    specifics
-5. treat official Anthropic/OpenAI docs as binding when vendor-specific rules
+6. treat official Anthropic/OpenAI docs as binding when vendor-specific rules
    are in play
-6. enforce a small, generic QA baseline when it materially helps
-7. touch evals only when that closes a real gap
+7. enforce a small, generic QA baseline when it materially helps
+8. touch evals only when that closes a real gap
 
 In practice, this means the skill prefers focused repairs over broad rewrites.
 If a skill is already good enough, it should say so instead of inventing
@@ -56,6 +64,9 @@ Typical problems it is meant to fix:
 - the description is too broad and causes false activations
 - the skill tries to cover too many adjacent tasks
 - the instructions are repetitive, vague, or overly process-heavy
+- the skill asks the model to perform repeatable normalization, generation,
+  extraction, validation, packaging, or report assembly that a local script
+  could perform deterministically
 - vendor-neutral rules and vendor-specific notes are mixed together
 - local vendor assumptions drift away from official Anthropic or OpenAI docs
 - support files exist but are not linked from `SKILL.md`
@@ -88,12 +99,16 @@ At a high level, the skill:
    may change
 4. reads `agents/openai.yaml` early when activation, defaults, or QA
    maintenance may be involved
-5. checks the local QA surface such as `.gitignore`, `README`, evals, support
+5. runs `python3 scripts/inspect_skill_surface.py <target-path>` on local skill
+   directories when structural QA or support-file drift may matter
+6. checks the local QA surface such as `.gitignore`, `README`, evals, support
    files, and committed `.idea` settings when present
-6. clusters the highest-value weaknesses
-7. improves only the most important 1 to 3 issues in that pass
-8. re-reviews the result against the same checklist
-9. stops once the remaining ideas are cosmetic rather than behavioral
+7. checks whether repeatable deterministic work should move into a local
+   script, wrapper, formatter, or validator instead of staying in prompt prose
+8. clusters the highest-value weaknesses
+9. improves only the most important 1 to 3 issues in that pass
+10. re-reviews the result against the same checklist
+11. stops once the remaining ideas are cosmetic rather than behavioral
 
 It intentionally avoids heavy audit rituals, mandatory confirmation loops, and
 large repo-wide rewrites unless they are actually necessary. All changes stay
@@ -183,6 +198,7 @@ evals/
   evals.json
   files/
 scripts/
+  inspect_skill_surface.py
   verify_skill_contract.py
 ```
 
@@ -196,6 +212,8 @@ scripts/
 - `evals/README.md` summarizes what the eval scenarios defend
 - `evals/evals.json` contains regression scenarios
 - `evals/files/` contains small fixtures used by those scenarios
+- `scripts/inspect_skill_surface.py` inventories local skill structure and
+  support-file coverage before deeper manual review
 - `scripts/verify_skill_contract.py` verifies that the local maintenance
   contract and its stable fixtures stay aligned
 
@@ -206,6 +224,8 @@ This skill is opinionated in a few specific ways:
 - minimality beats completeness
 - clear scope beats broad ambition
 - reproducible instructions beat abstract process language
+- deterministic inventory beats ad hoc support-surface scanning
+- scripted execution beats probabilistic reenactment for fully specified work
 - deterministic QA beats ceremonial QA
 - official vendor rules beat repeated local assumptions
 - self-critical heuristic hardening beats undocumented operator taste

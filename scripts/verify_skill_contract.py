@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import subprocess
 import sys
 
 
@@ -18,8 +19,11 @@ REQUIRED_FILES = [
     "evals/README.md",
     "evals/evals.json",
     "evals/files/claude-subagent/.claude/agents/release-notes-subagent.md",
+    "evals/files/script-first-skill/SKILL.md",
+    "evals/files/script-first-skill/scripts/render_release_summary.py",
     "references/official-vendor-baseline.md",
     "references/skill-quality-baseline.md",
+    "scripts/inspect_skill_surface.py",
     "scripts/verify_skill_contract.py",
 ]
 
@@ -38,6 +42,7 @@ SKILL_SUPPORT_PATHS = [
     "references/skill-quality-baseline.md",
     "references/official-vendor-baseline.md",
     "evals/evals.json",
+    "scripts/inspect_skill_surface.py",
     "scripts/verify_skill_contract.py",
 ]
 
@@ -47,10 +52,11 @@ README_SUPPORT_PATHS = [
     "references/official-vendor-baseline.md",
     "evals/README.md",
     "evals/evals.json",
+    "scripts/inspect_skill_surface.py",
     "scripts/verify_skill_contract.py",
 ]
 
-EXPECTED_EVAL_IDS = set(range(1, 19))
+EXPECTED_EVAL_IDS = set(range(1, 20))
 
 OFFICIAL_URLS = [
     "https://developers.openai.com/codex/skills",
@@ -107,13 +113,45 @@ def verify_references(errors: list[str]) -> None:
         require(readme_text.count(support_path) >= 1, f"README.md does not mention support path: {support_path}", errors)
 
     require(
+        "python3 scripts/inspect_skill_surface.py <target-path>" in skill_text,
+        "SKILL.md must tell agents when to run the surface inspector",
+        errors,
+    )
+    require(
         "python3 scripts/verify_skill_contract.py" in skill_text,
         "SKILL.md must tell maintainers when to run the verifier",
         errors,
     )
     require(
+        "scripts/inspect_skill_surface.py" in readme_text,
+        "README.md must describe the surface inspector",
+        errors,
+    )
+    require(
         "python3 scripts/verify_skill_contract.py" in readme_text,
         "README.md must tell maintainers to rerun the verifier after contract changes",
+        errors,
+    )
+
+
+def verify_script_first_guidance(errors: list[str]) -> None:
+    skill_text = read_text("SKILL.md")
+    readme_text = read_text("README.md")
+    quality_text = read_text("references/skill-quality-baseline.md")
+
+    require(
+        "Prefer script-first execution for target-local work" in skill_text,
+        "SKILL.md must define the script-first execution rule",
+        errors,
+    )
+    require(
+        "scripted execution beats probabilistic reenactment for fully specified work" in readme_text,
+        "README.md must describe the script-first design principle",
+        errors,
+    )
+    require(
+        "Do not leave that work in prompt prose when a target-local script can own it" in quality_text,
+        "Skill quality baseline must require script-first handling for deterministic execution",
         errors,
     )
 
@@ -151,7 +189,7 @@ def verify_evals(errors: list[str]) -> None:
         return
 
     actual_ids = {item.get("id") for item in evals if isinstance(item, dict)}
-    require(EXPECTED_EVAL_IDS.issubset(actual_ids), "Expected eval ids 1 through 18", errors)
+    require(EXPECTED_EVAL_IDS.issubset(actual_ids), "Expected eval ids 1 through 19", errors)
 
     indexed = {item.get("id"): item for item in evals if isinstance(item, dict)}
 
@@ -181,6 +219,16 @@ def verify_evals(errors: list[str]) -> None:
         errors,
     )
 
+    hygiene_eval = indexed.get(10, {})
+    require(
+        any(
+            "deterministic inventory step" in assertion
+            for assertion in hygiene_eval.get("assertions", [])
+        ),
+        "Eval 10 must defend deterministic surface inventory for local QA hardening",
+        errors,
+    )
+
     vendor_eval = indexed.get(18, {})
     require(
         "official OpenAI and Anthropic documentation" in vendor_eval.get("prompt", ""),
@@ -194,6 +242,19 @@ def verify_evals(errors: list[str]) -> None:
         errors,
     )
 
+    script_eval = indexed.get(19, {})
+    require(
+        "helper script" in script_eval.get("prompt", ""),
+        "Eval 19 must cover script-first optimization of deterministic work",
+        errors,
+    )
+    require(
+        "Treats scriptable deterministic execution as a real optimization target rather than acceptable prompt prose"
+        in script_eval.get("assertions", []),
+        "Eval 19 must defend script-first determinization",
+        errors,
+    )
+
 
 def verify_agent_metadata(errors: list[str]) -> None:
     text = read_text("agents/openai.yaml")
@@ -201,9 +262,23 @@ def verify_agent_metadata(errors: list[str]) -> None:
     require('display_name: "Skill Optimization"' in text, "Agent metadata display name drifted", errors)
     require("Use $skill-optimization" in text, "Agent metadata must reference $skill-optimization", errors)
     require("agents/openai.yaml" in text, "Agent metadata must mention agent metadata alignment", errors)
-    require("Claude Code subagent" in text, "Agent metadata must mention Claude Code subagent hardening", errors)
     require(
-        "Anthropic/OpenAI docs as binding for vendor-specific behavior" in text,
+        "Claude" in text and "Code subagent frontmatter" in text,
+        "Agent metadata must mention Claude Code subagent hardening",
+        errors,
+    )
+    require(
+        "scriptable probabilistic workflows" in text,
+        "Agent metadata must mention script-first hardening",
+        errors,
+    )
+    require(
+        "deterministic scripts or wrappers" in text,
+        "Agent metadata must mention script-first hardening",
+        errors,
+    )
+    require(
+        "Anthropic/OpenAI docs" in text and "vendor-specific" in text,
         "Agent metadata must mention the official vendor baseline",
         errors,
     )
@@ -221,6 +296,71 @@ def verify_claude_fixture(errors: list[str]) -> None:
     require("tools:" not in text, "Claude fixture should omit tools to defend the optional-tools rule", errors)
 
 
+def verify_surface_inspector(errors: list[str]) -> None:
+    script_path = ROOT / "scripts" / "inspect_skill_surface.py"
+
+    missing_qa = subprocess.run(
+        [sys.executable, str(script_path), str(ROOT / "evals" / "files" / "missing-qa-skill")],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    require(missing_qa.returncode == 0, "Surface inspector must run on missing-qa-skill", errors)
+    if missing_qa.returncode != 0:
+        return
+
+    try:
+        missing_payload = json.loads(missing_qa.stdout)
+    except json.JSONDecodeError:
+        errors.append("Surface inspector must emit valid JSON for missing-qa-skill")
+        return
+
+    require(missing_payload.get("target_kind") == "skill_directory", "Surface inspector must detect skill directories", errors)
+    require(
+        missing_payload.get("support_directories", {}).get("scripts") is True,
+        "Surface inspector must detect scripts/ directories",
+        errors,
+    )
+    require(
+        missing_payload.get("support_path_mentions", {}).get("scripts") is False,
+        "Surface inspector must detect missing scripts/ mentions in primary instructions",
+        errors,
+    )
+    require(
+        "scripts/ exists but primary instructions do not mention when to use it"
+        in missing_payload.get("quality_gaps", []),
+        "Surface inspector must report missing scripts/ linkage",
+        errors,
+    )
+
+    script_first = subprocess.run(
+        [sys.executable, str(script_path), str(ROOT / "evals" / "files" / "script-first-skill")],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    require(script_first.returncode == 0, "Surface inspector must run on script-first-skill", errors)
+    if script_first.returncode != 0:
+        return
+
+    try:
+        script_payload = json.loads(script_first.stdout)
+    except json.JSONDecodeError:
+        errors.append("Surface inspector must emit valid JSON for script-first-skill")
+        return
+
+    require(
+        "normalize" in script_payload.get("deterministic_workflow_terms", []),
+        "Surface inspector must extract deterministic workflow terms",
+        errors,
+    )
+    require(
+        "scripts/render_release_summary.py" in script_payload.get("script_paths_mentioned", []),
+        "Surface inspector must detect referenced local scripts",
+        errors,
+    )
+
+
 def main() -> int:
     errors: list[str] = []
 
@@ -233,10 +373,12 @@ def main() -> int:
     verify_local_artifacts(errors)
     verify_gitignore(errors)
     verify_references(errors)
+    verify_script_first_guidance(errors)
     verify_vendor_baseline(errors)
     verify_evals(errors)
     verify_agent_metadata(errors)
     verify_claude_fixture(errors)
+    verify_surface_inspector(errors)
 
     if errors:
         for error in errors:

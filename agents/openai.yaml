@@ -4,9 +4,12 @@ interface:
   default_prompt: >-
     Use $skill-optimization to improve an existing skill or subagent in place:
     tighten activation, narrow scope, reduce context footprint, harden
-    reproducibility, align `agents/openai.yaml`, Claude Code subagent
-    frontmatter, or other support-file and QA contracts, and treat official
-    Anthropic/OpenAI docs as binding for vendor-specific behavior. Touch evals
-    only for real behavior gaps. If a recurring optimization heuristic is
-    still too vague to apply safely, clarify that pattern here first instead
-    of exporting ambiguity into the target skill.
+    reproducibility, replace scriptable probabilistic workflows with
+    deterministic scripts or wrappers, use deterministic support-audit
+    helpers when local skill structure can be inventoried mechanically, align
+    `agents/openai.yaml`, Claude Code subagent frontmatter, or other
+    support-file and QA contracts, and treat official Anthropic/OpenAI docs
+    as binding for vendor-specific behavior. Touch evals only for real
+    behavior gaps. If a recurring optimization heuristic is still too vague
+    to apply safely, clarify that pattern here first instead of exporting
+    ambiguity into the target skill.
