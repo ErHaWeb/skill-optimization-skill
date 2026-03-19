@@ -87,6 +87,7 @@ Run the work as a short loop:
   safety.
 - When the target is a local skill directory and structural QA, support-file
   drift, or script-first gaps may matter, run
+  [`scripts/inspect_skill_surface.py`](scripts/inspect_skill_surface.py) via
   `python3 scripts/inspect_skill_surface.py <target-path>` early.
   Use its JSON output as a deterministic inventory of the local maintenance
   surface before deciding which files need deeper manual reading.
@@ -125,12 +126,13 @@ Run the work as a short loop:
    export, packaging, or report assembly is still encoded as model behavior
    even though the target could own it as a local script, wrapper, formatter,
    or validator.
-7. Start `evals/` with `evals/evals.json` when behavior, scope boundaries, QA
-   guarantees, or support-file contracts may change.
+7. Start [`evals/evals.json`](evals/evals.json) when behavior, scope
+   boundaries, QA guarantees, or support-file contracts may change.
 8. Read [`references/official-vendor-baseline.md`](references/official-vendor-baseline.md)
    when vendor-specific instructions, metadata, frontmatter, prompt structure,
    or delegation behavior may change.
-9. Run `python3 scripts/verify_skill_contract.py` when the target owns that
+9. Run [`scripts/verify_skill_contract.py`](scripts/verify_skill_contract.py)
+   via `python3 scripts/verify_skill_contract.py` when the target owns that
    verifier and your edits touch QA contracts, metadata, fixture linkage, or
    vendor-baseline references.
 10. Open only the support files needed to preserve behavior or validate a real
@@ -189,6 +191,9 @@ Run the work as a short loop:
   extraction, validation, packaging, or mechanical reporting, is that path
   implemented as a script or wrapper instead of prompt-only behavior when the
   local environment can support it?
+- When a maintainer-facing Markdown file references a local support file of the
+  current skill, is that reference a Markdown link rather than a bare code
+  path when the path can resolve from the current document?
 - If `scripts/`, `references/`, `fixtures/`, `evals/`, `assets/`, or
   `agents/` exist, does `SKILL.md` say when to read or run them, and does
   `agents/openai.yaml` still match the trigger surface when present?
@@ -235,7 +240,8 @@ Run this loop until no substantial change remains:
    Pick from activation, boundaries, context footprint, operational
    instructions, deterministic execution surface, QA baseline, eval coverage,
    and report/no-op behavior.
-   Use `python3 scripts/inspect_skill_surface.py <target-path>` when it can
+   Use [`scripts/inspect_skill_surface.py`](scripts/inspect_skill_surface.py)
+   via `python3 scripts/inspect_skill_surface.py <target-path>` when it can
    replace manual inventory of local structural facts.
 2. Choose only the 1 to 3 highest-impact weaknesses for the current pass.
    A change is substantial only if it improves behavior, determinism, scope
@@ -267,6 +273,11 @@ Run this loop until no substantial change remains:
 - Use relative file references from the skill root.
 - If you add supporting files, reference them directly from `SKILL.md` instead
   of relying on deep reference chains.
+- When a Markdown document references a local support file of the current
+  skill and the intent is to open or read it, use a Markdown link when the
+  path resolves from the current document.
+- Keep plain code formatting for generic target-file placeholders, shell
+  commands, and literal path examples that are not meant to be clicked.
 - If official Anthropic or OpenAI docs define a vendor-specific rule, treat
   that rule as binding for the target. Do not preserve a conflicting local
   pattern just because nearby skills already copied it.

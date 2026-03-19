@@ -132,7 +132,7 @@
         "Uses the local support-audit helper or another deterministic inventory step before broad manual QA scanning when a local skill directory is available",
         "Recognizes missing local hygiene or .gitignore coverage as a skill-quality issue",
         "Treats committed dependency or editor noise as a local quality problem instead of normal project state",
-        "Links relevant support files from the skill text when they matter",
+        "Links relevant support files from the skill text with Markdown links when the target format supports it",
         "Keeps the change set inside the target skill instead of widening scope"
       ]
     },

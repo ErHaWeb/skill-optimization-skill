@@ -34,6 +34,11 @@ content.
   behavior.
   This applies to `scripts/`, `references/`, `fixtures/`, `evals/`, `assets/`,
   and `agents/` when they exist.
+- When a maintainer-facing Markdown file references a local support file that
+  should be opened or read, prefer a Markdown link when the path resolves from
+  the current document.
+  Keep plain code formatting for generic placeholders, shell commands, and
+  literal path examples that are not meant to be clicked.
 - If `README.md` exists as maintainer-facing guidance, keep it aligned when QA
   responsibilities, support-file contracts, or agent-metadata upkeep change.
 - If `agents/openai.yaml` exists, treat it as maintained UI metadata rather than

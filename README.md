@@ -13,17 +13,21 @@ the model orchestrate or interpret the result.
 
 This repository contains:
 
-- `SKILL.md`: the machine-facing instructions used by the agent
-- `agents/openai.yaml`: the UI metadata kept aligned with the skill's real
+- [`SKILL.md`](SKILL.md): the machine-facing instructions used by the agent
+- [`agents/openai.yaml`](agents/openai.yaml): the UI metadata kept aligned with
+  the skill's real
   trigger surface
-- `references/`: compact reusable guidance for generic skill QA
-- `references/official-vendor-baseline.md`: the binding Anthropic/OpenAI
-  quality baseline for vendor-specific behavior
-- `evals/`: small regression scenarios that protect the intended behavior
-- `scripts/inspect_skill_surface.py`: a deterministic inventory helper for
+- [`references/`](references/): compact reusable guidance for generic skill QA
+- [`references/official-vendor-baseline.md`](references/official-vendor-baseline.md):
+  the binding Anthropic/OpenAI quality baseline for vendor-specific behavior
+- [`evals/`](evals/): small regression scenarios that protect the intended
+  behavior
+- [`scripts/inspect_skill_surface.py`](scripts/inspect_skill_surface.py): a
+  deterministic inventory helper for
   local skill QA surface, support-file coverage, and obvious structural gaps
-- `scripts/verify_skill_contract.py`: a deterministic contract check for
-  maintainer-facing metadata, fixtures, and reference alignment
+- [`scripts/verify_skill_contract.py`](scripts/verify_skill_contract.py): a
+  deterministic contract check for maintainer-facing metadata, fixtures, and
+  reference alignment
 
 ## What This Skill Does
 
@@ -97,9 +101,10 @@ At a high level, the skill:
    target is a Claude subagent
 3. loads the official Anthropic/OpenAI baseline when vendor-specific behavior
    may change
-4. reads `agents/openai.yaml` early when activation, defaults, or QA
-   maintenance may be involved
-5. runs `python3 scripts/inspect_skill_surface.py <target-path>` on local skill
+4. reads [`agents/openai.yaml`](agents/openai.yaml) early when activation,
+   defaults, or QA maintenance may be involved
+5. runs [`scripts/inspect_skill_surface.py`](scripts/inspect_skill_surface.py)
+   via `python3 scripts/inspect_skill_surface.py <target-path>` on local skill
    directories when structural QA or support-file drift may matter
 6. checks the local QA surface such as `.gitignore`, `README`, evals, support
    files, and committed `.idea` settings when present
@@ -124,6 +129,7 @@ Code-specific fields into generic Markdown prose.
 For all vendor-specific behavior, official Anthropic and OpenAI docs outrank
 local habit, copied examples, and stale repository folklore.
 When this skill's own contract files change, rerun
+[`scripts/verify_skill_contract.py`](scripts/verify_skill_contract.py) via
 `python3 scripts/verify_skill_contract.py` so metadata, fixtures, and
 maintainer docs cannot drift silently.
 
@@ -202,19 +208,22 @@ scripts/
   verify_skill_contract.py
 ```
 
-- `SKILL.md` is the actual skill definition
-- `agents/openai.yaml` is the maintained UI metadata for discovery-facing
-  activation guidance
-- `references/official-vendor-baseline.md` defines the authoritative
+- [`SKILL.md`](SKILL.md) is the actual skill definition
+- [`agents/openai.yaml`](agents/openai.yaml) is the maintained UI metadata for
+  discovery-facing activation guidance
+- [`references/official-vendor-baseline.md`](references/official-vendor-baseline.md)
+  defines the authoritative
   Anthropic/OpenAI baseline for vendor-specific behavior
-- `references/skill-quality-baseline.md` holds the generic QA checklist used for
-  skill hardening
-- `evals/README.md` summarizes what the eval scenarios defend
-- `evals/evals.json` contains regression scenarios
-- `evals/files/` contains small fixtures used by those scenarios
-- `scripts/inspect_skill_surface.py` inventories local skill structure and
-  support-file coverage before deeper manual review
-- `scripts/verify_skill_contract.py` verifies that the local maintenance
+- [`references/skill-quality-baseline.md`](references/skill-quality-baseline.md)
+  holds the generic QA checklist used for skill hardening
+- [`evals/README.md`](evals/README.md) summarizes what the eval scenarios defend
+- [`evals/evals.json`](evals/evals.json) contains regression scenarios
+- [`evals/files/`](evals/files/) contains small fixtures used by those scenarios
+- [`scripts/inspect_skill_surface.py`](scripts/inspect_skill_surface.py)
+  inventories local skill structure and support-file coverage before deeper
+  manual review
+- [`scripts/verify_skill_contract.py`](scripts/verify_skill_contract.py)
+  verifies that the local maintenance
   contract and its stable fixtures stay aligned
 
 ## Design Principles
@@ -226,6 +235,7 @@ This skill is opinionated in a few specific ways:
 - reproducible instructions beat abstract process language
 - deterministic inventory beats ad hoc support-surface scanning
 - scripted execution beats probabilistic reenactment for fully specified work
+- clickable local support-file links beat bare path mentions in Markdown docs
 - deterministic QA beats ceremonial QA
 - official vendor rules beat repeated local assumptions
 - self-critical heuristic hardening beats undocumented operator taste

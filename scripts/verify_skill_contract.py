@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 
@@ -56,6 +57,25 @@ README_SUPPORT_PATHS = [
     "scripts/verify_skill_contract.py",
 ]
 
+SKILL_LINK_REQUIRED_PATHS = [
+    "evals/evals.json",
+    "references/skill-quality-baseline.md",
+    "references/official-vendor-baseline.md",
+    "scripts/inspect_skill_surface.py",
+    "scripts/verify_skill_contract.py",
+]
+
+README_LINK_REQUIRED_PATHS = [
+    "SKILL.md",
+    "agents/openai.yaml",
+    "references/official-vendor-baseline.md",
+    "references/skill-quality-baseline.md",
+    "evals/README.md",
+    "evals/evals.json",
+    "scripts/inspect_skill_surface.py",
+    "scripts/verify_skill_contract.py",
+]
+
 EXPECTED_EVAL_IDS = set(range(1, 20))
 
 OFFICIAL_URLS = [
@@ -77,6 +97,11 @@ def read_text(relative_path: str) -> str:
 def require(condition: bool, message: str, errors: list[str]) -> None:
     if not condition:
         errors.append(message)
+
+
+def has_markdown_link(text: str, relative_path: str) -> bool:
+    pattern = re.compile(rf"\[[^\]]+]\({re.escape(relative_path)}\)")
+    return bool(pattern.search(text))
 
 
 def verify_files_exist(errors: list[str]) -> None:
@@ -130,6 +155,32 @@ def verify_references(errors: list[str]) -> None:
     require(
         "python3 scripts/verify_skill_contract.py" in readme_text,
         "README.md must tell maintainers to rerun the verifier after contract changes",
+        errors,
+    )
+
+
+def verify_markdown_links(errors: list[str]) -> None:
+    skill_text = read_text("SKILL.md")
+    readme_text = read_text("README.md")
+    quality_text = read_text("references/skill-quality-baseline.md")
+
+    for relative_path in SKILL_LINK_REQUIRED_PATHS:
+        require(
+            has_markdown_link(skill_text, relative_path),
+            f"SKILL.md must link local support path: {relative_path}",
+            errors,
+        )
+
+    for relative_path in README_LINK_REQUIRED_PATHS:
+        require(
+            has_markdown_link(readme_text, relative_path),
+            f"README.md must link local support path: {relative_path}",
+            errors,
+        )
+
+    require(
+        "prefer a Markdown link when the path resolves from" in quality_text,
+        "Skill quality baseline must define the Markdown-link rule for local support files",
         errors,
     )
 
@@ -226,6 +277,14 @@ def verify_evals(errors: list[str]) -> None:
             for assertion in hygiene_eval.get("assertions", [])
         ),
         "Eval 10 must defend deterministic surface inventory for local QA hardening",
+        errors,
+    )
+    require(
+        any(
+            "Markdown links" in assertion
+            for assertion in hygiene_eval.get("assertions", [])
+        ),
+        "Eval 10 must defend Markdown links for support-file references",
         errors,
     )
 
@@ -373,6 +432,7 @@ def main() -> int:
     verify_local_artifacts(errors)
     verify_gitignore(errors)
     verify_references(errors)
+    verify_markdown_links(errors)
     verify_script_first_guidance(errors)
     verify_vendor_baseline(errors)
     verify_evals(errors)
