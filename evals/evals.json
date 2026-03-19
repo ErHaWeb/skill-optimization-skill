@@ -123,8 +123,8 @@
     },
     {
       "id": 10,
-      "prompt": "Harden the skill at /tmp/missing-qa-skill. It has no local .gitignore, a committed node_modules directory, and helper files that are not linked from the skill text. Keep all changes inside that skill only.",
-      "expected_output": "A focused target-local hardening pass that uses deterministic local surface inventory where available, adds or recommends local hygiene coverage, links the support files from the skill, and avoids broad repository cleanup.",
+      "prompt": "Harden the skill at /tmp/missing-qa-skill. It has no local .gitignore, a stray .DS_Store file on disk, a committed node_modules directory, and helper files that are not linked from the skill text. Keep all changes inside that skill only.",
+      "expected_output": "A focused target-local hardening pass that uses deterministic local surface inventory where available, adds or recommends local hygiene coverage, keeps .DS_Store as an ignore-only concern instead of standalone cleanup logic, links the support files from the skill, and avoids broad repository cleanup.",
       "files": [
         "files/missing-qa-skill/"
       ],
@@ -132,6 +132,7 @@
         "Uses the local support-audit helper or another deterministic inventory step before broad manual QA scanning when a local skill directory is available",
         "Recognizes missing local hygiene or .gitignore coverage as a skill-quality issue",
         "Treats committed dependency or editor noise as a local quality problem instead of normal project state",
+        "Keeps .DS_Store in ignore coverage rather than inventing dedicated identification or cleanup logic for it",
         "Links relevant support files from the skill text with Markdown links when the target format supports it",
         "Keeps the change set inside the target skill instead of widening scope"
       ]

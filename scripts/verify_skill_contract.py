@@ -33,6 +33,7 @@ FORBIDDEN_FILES = [
 ]
 
 REQUIRED_GITIGNORE_ENTRIES = {
+    ".DS_Store",
     ".idea",
     "__pycache__/",
 }

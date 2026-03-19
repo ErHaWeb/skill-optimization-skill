@@ -185,6 +185,9 @@ Run the work as a short loop:
 - Is there a local `.gitignore` or equivalent hygiene coverage for editor,
   generated, cache, or package-manager artifacts that can appear in the skill
   directory?
+  Keep host-OS noise such as `.DS_Store` in ignore coverage when relevant, but
+  do not turn it into standalone identification or cleanup logic unless the
+  user explicitly asked for repository cleanup.
 - Is there at least one machine-checkable quality contract such as realistic
   evals, a deterministic verifier, or a validator script with stable fixtures?
 - If the target performs deterministic file generation, normalization,

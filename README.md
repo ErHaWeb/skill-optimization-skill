@@ -83,6 +83,11 @@ Typical problems it is meant to fix:
 - `.idea` inspection exceptions are absent, too broad, or undocumented
 - the evals no longer match the real behavior of the skill
 
+Host-OS noise such as `.DS_Store` belongs in `.gitignore` coverage when
+relevant, but this skill should not invent dedicated `.DS_Store`
+identification or cleanup steps unless the user explicitly asks for repository
+cleanup.
+
 ## What This Skill Is Not For
 
 Do not use it for:

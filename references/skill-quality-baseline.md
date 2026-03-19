@@ -16,9 +16,10 @@ content.
   user asked for it.
 - The target has local hygiene coverage.
   Prefer a local `.gitignore` when editor, cache, dependency, package-manager,
-  or generated artifacts can accumulate inside the skill directory. If a parent
-  repo already covers the same files and no local exception is needed, that is
-  acceptable, but note it explicitly when relevant.
+  generated, or host-OS artifacts such as `.DS_Store` can accumulate inside
+  the skill directory. If a parent repo already covers the same files and no
+  local exception is needed, that is acceptable, but note it explicitly when
+  relevant.
 - The target has at least one machine-checkable quality contract.
   Acceptable examples:
   - `evals/evals.json` with realistic prompts and sharp assertions
@@ -103,8 +104,12 @@ Do not add `.idea` just to satisfy a checklist.
 
 ## Hygiene Rules
 
-- Ignore or remove workspace files, caches, or dependency directories when
-  they can appear locally.
+- Prefer `.gitignore` coverage for incidental workspace files or host-OS noise
+  such as `.DS_Store`. Do not turn `.DS_Store` discovery or deletion into
+  prompt-level skill logic unless the user explicitly asked for repository
+  cleanup.
+- Ignore or remove recurring tool artifacts, caches, or dependency directories
+  when they can appear locally and materially affect the skill surface.
 - Treat agent-generated worktree mirrors such as `/.claude/worktrees/` as local
   artifacts unless the project intentionally versions them.
 - Do not confuse intentional Claude Code project config such as
