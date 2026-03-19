@@ -26,3 +26,7 @@ When QA guidance changes, prefer scenarios that exercise:
 - unignored local worktree mirrors such as `/.claude/worktrees/`
 - missing Git context
 - justified no-op after a re-review pass
+
+Do not add a fresh scenario mechanically when the fix is only metadata or
+maintainer-doc alignment and an existing scenario already covers that
+behavior.

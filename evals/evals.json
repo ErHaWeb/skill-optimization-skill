@@ -190,7 +190,7 @@
     {
       "id": 15,
       "prompt": "Harden the skill at /tmp/agent-metadata-skill. The SKILL.md trigger surface changed, but agents/openai.yaml still describes the old behavior, and the directory contains a local .claude/worktrees mirror. Keep the work target-local.",
-      "expected_output": "A focused optimization that realigns agent metadata with the current skill behavior, treats the worktree mirror as a local hygiene issue, and avoids repo-wide cleanup.",
+      "expected_output": "A focused optimization that realigns agent metadata with the current skill behavior, treats the worktree mirror as a local hygiene issue, avoids repo-wide cleanup, and does not invent extra eval churn unless behavior coverage actually changed.",
       "files": [
         "files/agent-metadata-skill/"
       ],
@@ -198,7 +198,8 @@
         "Recognizes stale agents/openai.yaml metadata as a real skill-quality issue",
         "Treats local worktree mirrors such as /.claude/worktrees as hygiene artifacts unless intentionally versioned",
         "Keeps the changes inside the target skill instead of widening scope",
-        "Does not ignore agent metadata drift when activation or defaults changed materially"
+        "Does not ignore agent metadata drift when activation or defaults changed materially",
+        "Does not add new eval scenarios when metadata alignment is the only uncovered gap"
       ]
     },
     {

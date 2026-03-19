@@ -23,8 +23,18 @@ content.
   behavior.
   This applies to `scripts/`, `references/`, `fixtures/`, `evals/`, `assets/`,
   and `agents/` when they exist.
-- If `agents/openai.yaml` exists, keep it aligned when the skill's activation
-  surface or default workflow changes materially.
+- If `README.md` exists as maintainer-facing guidance, keep it aligned when QA
+  responsibilities, support-file contracts, or agent-metadata upkeep change.
+- If `agents/openai.yaml` exists, treat it as maintained UI metadata rather than
+  decoration.
+  Keep it aligned when the skill's activation surface, scope boundary, or
+  default workflow changes materially.
+- When comparable mature local skills already ship `agents/openai.yaml`, a
+  missing file on an otherwise similar target can be a real quality gap rather
+  than a speculative extra. Verify against the local landscape before adding
+  it.
+- If the target already has a verifier or contract script, prefer extending it
+  to cover `agents/openai.yaml` alignment instead of relying on prose alone.
 - The target keeps its routine context footprint intentionally small.
   `SKILL.md` should avoid mandatory broad reads, duplicated rules, or verbose
   default output scaffolding unless they materially improve behavior.
@@ -87,8 +97,10 @@ Treat token efficiency as a quality contract, not as optional polish.
 
 Edit locally when the fix is small, deterministic, and clearly inside the
 target skill. Examples: adding a missing `.gitignore`, linking a verifier from
-`SKILL.md`, adding a minimal eval, narrowing an inspection exception, or
-removing duplicated instructions and unnecessary read requirements.
+`SKILL.md`, aligning `agents/openai.yaml` or a nearby maintainer README,
+extending an existing verifier to catch metadata drift, adding a minimal eval,
+narrowing an inspection exception, or removing duplicated instructions and
+unnecessary read requirements.
 
 Report instead of editing when the missing quality measure would require:
 

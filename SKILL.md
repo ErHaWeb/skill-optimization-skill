@@ -4,9 +4,9 @@ description: >
   Improve an existing skill or subagent in place. Use when the user wants to
   tighten activation or scope, reduce context footprint, simplify
   instructions, harden reproducibility, or align evals, deterministic helpers,
-  support-file linkage, `.gitignore`, or scoped IDE inspection exceptions. Do
-  not use it for new-skill creation, repo-wide normalization, or generic
-  cleanup outside the target skill.
+  agent metadata, support-file linkage, `.gitignore`, or scoped IDE inspection
+  exceptions. Do not use it for new-skill creation, repo-wide normalization,
+  or generic cleanup outside the target skill.
 ---
 
 # Skill Optimization
@@ -75,6 +75,8 @@ Run the work as a short loop:
 - Prefer workable defaults over process mechanics.
 - Prefer the smallest context footprint that preserves behavior, QA, and
   safety.
+- If `agents/openai.yaml` exists, treat it as a maintained activation and UI
+  contract, not as decorative metadata.
 - Treat no-op as a valid result. Stop when another pass would only improve tone,
   formatting, or wording without changing behavior, determinism, or safety.
 
@@ -82,15 +84,17 @@ Run the work as a short loop:
 
 1. Read the primary skill file first: usually `SKILL.md`, or the target
    markdown file for a standalone subagent.
-2. Check the target skill's local QA surface as relevant: `.gitignore`,
+2. Read `agents/openai.yaml` early when it exists and activation surface,
+   default workflow, or local QA maintenance may be in scope.
+3. Check the target skill's local QA surface as relevant: `.gitignore`,
    committed `.idea`, `README`, `references/`, `evals/`, and support files.
-3. Start `evals/` with `evals/evals.json` when behavior, scope boundaries, QA
+4. Start `evals/` with `evals/evals.json` when behavior, scope boundaries, QA
    guarantees, or support-file contracts may change.
-4. Open only the support files needed to preserve behavior or validate a real
+5. Open only the support files needed to preserve behavior or validate a real
    contract.
-5. Use external docs only when vendor behavior or the skills standard materially
+6. Use external docs only when vendor behavior or the skills standard materially
    affects the edit.
-6. If your intended change depends on an internal optimization pattern that is
+7. If your intended change depends on an internal optimization pattern that is
    still underspecified in this skill, clarify or narrow that pattern here
    first instead of silently exporting it into the target skill.
 
@@ -132,6 +136,8 @@ Run the work as a short loop:
 - If `scripts/`, `references/`, `fixtures/`, `evals/`, `assets/`, or
   `agents/` exist, does `SKILL.md` say when to read or run them, and does
   `agents/openai.yaml` still match the trigger surface when present?
+- When `agents/openai.yaml` exists, do `SKILL.md`, `README.md`, or an existing
+  verifier treat it as a maintained file when that would otherwise drift?
 - If `.idea` is committed, are inspection exceptions narrow, scope-based, and
   documented instead of globally suppressing warnings?
 
@@ -190,11 +196,17 @@ Run this loop until no substantial change remains:
 - Use relative file references from the skill root.
 - If you add supporting files, reference them directly from `SKILL.md` instead
   of relying on deep reference chains.
+- When comparable mature local skills already ship `agents/openai.yaml`, treat
+  that file as an established local maintenance surface, not a speculative
+  extra. Add or align it only when the target's real trigger surface supports
+  it.
 - Keep QA rules generic and content-independent. Prefer a small baseline that
   can be reused across many skills over topic-specific governance.
 - Require at least one machine-checkable quality contract for the target skill.
   Complex, script-heavy, or high-risk skills often need both evals and an
   executable verifier or validator with stable fixtures.
+- If the target already has a verifier or contract script, prefer extending it
+  to catch `agents/openai.yaml` drift before inventing additional QA layers.
 - Do not invent repo-wide standards while optimizing one skill. Report broader
   repository issues separately instead of silently widening scope.
 
@@ -222,6 +234,10 @@ Run this loop until no substantial change remains:
 - Update evals when there is a clear gap around activation boundaries, scope
   control, context footprint, QA baseline behavior, loop termination, or a
   critical workflow expectation.
+- Do not add evals mechanically for `agents/openai.yaml`, `README.md`, or
+  verifier-maintenance edits. Add or update them only when the metadata gap
+  exposes a real behavior contract that existing scenarios do not already
+  defend.
 - Remove or rewrite eval expectations that enforce unnecessary confirmation
   loops, exhaustive audit rituals, or verbose report scaffolding.
 - Prefer realistic prompts and sharp assertions over broad process checklists.

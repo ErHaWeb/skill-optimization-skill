@@ -4,6 +4,7 @@ interface:
   default_prompt: >-
     Use $skill-optimization to improve an existing skill or subagent in place:
     tighten activation, narrow scope, reduce context footprint, harden
-    reproducibility, and align support files or QA contracts. If a recurring
+    reproducibility, align `agents/openai.yaml` or other support-file and QA
+    contracts, and touch evals only for real behavior gaps. If a recurring
     optimization heuristic is still too vague to apply safely, clarify that
     pattern here first instead of exporting ambiguity into the target skill.

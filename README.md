@@ -10,6 +10,8 @@ or its vendor-specific details are mixed into otherwise portable guidance.
 This repository contains:
 
 - `SKILL.md`: the machine-facing instructions used by the agent
+- `agents/openai.yaml`: the UI metadata kept aligned with the skill's real
+  trigger surface
 - `references/`: compact reusable guidance for generic skill QA
 - `evals/`: small regression scenarios that protect the intended behavior
 
@@ -50,6 +52,8 @@ Typical problems it is meant to fix:
 - the instructions are repetitive, vague, or overly process-heavy
 - vendor-neutral rules and vendor-specific notes are mixed together
 - support files exist but are not linked from `SKILL.md`
+- `agents/openai.yaml` is stale, missing in an established local skill
+  landscape, or treated as optional decoration
 - `.gitignore`, evals, verifier scripts, or deterministic fixtures are missing
   or weak
 - `.idea` inspection exceptions are absent, too broad, or undocumented
@@ -69,16 +73,22 @@ Do not use it for:
 At a high level, the skill:
 
 1. reads the primary skill file first
-2. checks the local QA surface such as `.gitignore`, evals, support files, and
-   committed `.idea` settings when present
-3. clusters the highest-value weaknesses
-4. improves only the most important 1 to 3 issues in that pass
-5. re-reviews the result against the same checklist
-6. stops once the remaining ideas are cosmetic rather than behavioral
+2. reads `agents/openai.yaml` early when activation, defaults, or QA
+   maintenance may be involved
+3. checks the local QA surface such as `.gitignore`, `README`, evals, support
+   files, and committed `.idea` settings when present
+4. clusters the highest-value weaknesses
+5. improves only the most important 1 to 3 issues in that pass
+6. re-reviews the result against the same checklist
+7. stops once the remaining ideas are cosmetic rather than behavioral
 
 It intentionally avoids heavy audit rituals, mandatory confirmation loops, and
 large repo-wide rewrites unless they are actually necessary. All changes stay
 inside the target skill or subagent unless the user explicitly broadens scope.
+When a local skill ecosystem already treats `agents/openai.yaml` as standard,
+the skill should handle missing or stale metadata as a real maintenance gap,
+not a speculative add-on. That alone is not a reason to invent new eval
+scenarios if existing coverage already defends the behavior.
 
 ## Supported Targets
 
@@ -141,6 +151,8 @@ Clean up the whole repository documentation.
 
 ```text
 SKILL.md
+agents/
+  openai.yaml
 references/
   skill-quality-baseline.md
 evals/
@@ -150,6 +162,8 @@ evals/
 ```
 
 - `SKILL.md` is the actual skill definition
+- `agents/openai.yaml` is the maintained UI metadata for discovery-facing
+  activation guidance
 - `references/skill-quality-baseline.md` holds the generic QA checklist used for
   skill hardening
 - `evals/README.md` summarizes what the eval scenarios defend
