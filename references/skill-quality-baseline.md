@@ -5,6 +5,11 @@ content.
 
 ## Minimum Baseline For Any Skill
 
+- The target follows applicable official vendor documentation when its
+  behavior depends on OpenAI/Codex or Anthropic/Claude semantics.
+  Treat official vendor docs as authoritative for vendor-specific fields,
+  metadata, frontmatter, delegation triggers, tool restrictions, and prompt
+  structure. Do not let neighboring skills override them by repetition alone.
 - The target has a clear maintenance context.
   Prefer a local Git repository or an obvious parent repo. If no Git context is
   present, report that as a quality gap instead of initializing one unless the
@@ -29,15 +34,28 @@ content.
   decoration.
   Keep it aligned when the skill's activation surface, scope boundary, or
   default workflow changes materially.
+- If the target is a Claude Code subagent, keep its current scope
+  (`.claude/agents/` or `~/.claude/agents/`) unless the user explicitly asks
+  to move it.
+- Treat Claude Code YAML frontmatter as maintained configuration, not prompt
+  decoration.
+  Keep supported fields aligned with actual behavior, and do not add `tools`
+  mechanically when unrestricted inheritance is a valid contract.
 - When comparable mature local skills already ship `agents/openai.yaml`, a
   missing file on an otherwise similar target can be a real quality gap rather
   than a speculative extra. Verify against the local landscape before adding
   it.
 - If the target already has a verifier or contract script, prefer extending it
   to cover `agents/openai.yaml` alignment instead of relying on prose alone.
+- When a target-local verifier exists, keep maintainer-facing docs aligned with
+  when to run it, and rerun it after contract-file edits that touch metadata,
+  vendor-baseline references, or stable fixtures.
 - The target keeps its routine context footprint intentionally small.
   `SKILL.md` should avoid mandatory broad reads, duplicated rules, or verbose
   default output scaffolding unless they materially improve behavior.
+
+Read [`official-vendor-baseline.md`](official-vendor-baseline.md) when the
+optimization touches vendor-specific skill or subagent behavior.
 
 ## Additional Baseline For Complex Skills
 
@@ -75,6 +93,8 @@ Do not add `.idea` just to satisfy a checklist.
   or dependency directories when they can appear locally.
 - Treat agent-generated worktree mirrors such as `/.claude/worktrees/` as local
   artifacts unless the project intentionally versions them.
+- Do not confuse intentional Claude Code project config such as
+  `/.claude/agents/` or `/.claude/skills/` with disposable tool artifacts.
 - Do not treat committed build output or dependency trees as normal unless the
   skill truly requires them.
 - Keep fixtures intentionally minimal and deterministic.
@@ -98,9 +118,11 @@ Treat token efficiency as a quality contract, not as optional polish.
 Edit locally when the fix is small, deterministic, and clearly inside the
 target skill. Examples: adding a missing `.gitignore`, linking a verifier from
 `SKILL.md`, aligning `agents/openai.yaml` or a nearby maintainer README,
-extending an existing verifier to catch metadata drift, adding a minimal eval,
-narrowing an inspection exception, or removing duplicated instructions and
-unnecessary read requirements.
+extending an existing verifier to catch metadata drift, tightening Claude Code
+subagent frontmatter or scope handling, adding a minimal eval, narrowing an
+inspection exception, or removing duplicated instructions and unnecessary read
+requirements. The same applies when replacing stale local vendor assumptions
+with the official Anthropic or OpenAI rule.
 
 Report instead of editing when the missing quality measure would require:
 

@@ -13,7 +13,11 @@ This repository contains:
 - `agents/openai.yaml`: the UI metadata kept aligned with the skill's real
   trigger surface
 - `references/`: compact reusable guidance for generic skill QA
+- `references/official-vendor-baseline.md`: the binding Anthropic/OpenAI
+  quality baseline for vendor-specific behavior
 - `evals/`: small regression scenarios that protect the intended behavior
+- `scripts/verify_skill_contract.py`: a deterministic contract check for
+  maintainer-facing metadata, fixtures, and reference alignment
 
 ## What This Skill Does
 
@@ -27,8 +31,10 @@ Its main priorities are:
 3. make instructions shorter, more operational, and more reproducible
 4. keep portable guidance separate from OpenAI/Codex and Anthropic/Claude Code
    specifics
-5. enforce a small, generic QA baseline when it materially helps
-6. touch evals only when that closes a real gap
+5. treat official Anthropic/OpenAI docs as binding when vendor-specific rules
+   are in play
+6. enforce a small, generic QA baseline when it materially helps
+7. touch evals only when that closes a real gap
 
 In practice, this means the skill prefers focused repairs over broad rewrites.
 If a skill is already good enough, it should say so instead of inventing
@@ -51,9 +57,12 @@ Typical problems it is meant to fix:
 - the skill tries to cover too many adjacent tasks
 - the instructions are repetitive, vague, or overly process-heavy
 - vendor-neutral rules and vendor-specific notes are mixed together
+- local vendor assumptions drift away from official Anthropic or OpenAI docs
 - support files exist but are not linked from `SKILL.md`
 - `agents/openai.yaml` is stale, missing in an established local skill
   landscape, or treated as optional decoration
+- a Claude Code subagent has been normalized away from `.claude/agents/`,
+  carries stale frontmatter, or treats `tools` as mandatory boilerplate
 - `.gitignore`, evals, verifier scripts, or deterministic fixtures are missing
   or weak
 - `.idea` inspection exceptions are absent, too broad, or undocumented
@@ -73,14 +82,18 @@ Do not use it for:
 At a high level, the skill:
 
 1. reads the primary skill file first
-2. reads `agents/openai.yaml` early when activation, defaults, or QA
+2. reads Claude Code subagent frontmatter and current scope early when the
+   target is a Claude subagent
+3. loads the official Anthropic/OpenAI baseline when vendor-specific behavior
+   may change
+4. reads `agents/openai.yaml` early when activation, defaults, or QA
    maintenance may be involved
-3. checks the local QA surface such as `.gitignore`, `README`, evals, support
+5. checks the local QA surface such as `.gitignore`, `README`, evals, support
    files, and committed `.idea` settings when present
-4. clusters the highest-value weaknesses
-5. improves only the most important 1 to 3 issues in that pass
-6. re-reviews the result against the same checklist
-7. stops once the remaining ideas are cosmetic rather than behavioral
+6. clusters the highest-value weaknesses
+7. improves only the most important 1 to 3 issues in that pass
+8. re-reviews the result against the same checklist
+9. stops once the remaining ideas are cosmetic rather than behavioral
 
 It intentionally avoids heavy audit rituals, mandatory confirmation loops, and
 large repo-wide rewrites unless they are actually necessary. All changes stay
@@ -89,6 +102,15 @@ When a local skill ecosystem already treats `agents/openai.yaml` as standard,
 the skill should handle missing or stale metadata as a real maintenance gap,
 not a speculative add-on. That alone is not a reason to invent new eval
 scenarios if existing coverage already defends the behavior.
+For Claude Code subagents, the skill should preserve the current project/user
+scope and treat YAML frontmatter as real configuration. It should not force a
+`tools` field just because a subagent exists, and it should not flatten Claude
+Code-specific fields into generic Markdown prose.
+For all vendor-specific behavior, official Anthropic and OpenAI docs outrank
+local habit, copied examples, and stale repository folklore.
+When this skill's own contract files change, rerun
+`python3 scripts/verify_skill_contract.py` so metadata, fixtures, and
+maintainer docs cannot drift silently.
 
 ## Supported Targets
 
@@ -154,21 +176,28 @@ SKILL.md
 agents/
   openai.yaml
 references/
+  official-vendor-baseline.md
   skill-quality-baseline.md
 evals/
   README.md
   evals.json
   files/
+scripts/
+  verify_skill_contract.py
 ```
 
 - `SKILL.md` is the actual skill definition
 - `agents/openai.yaml` is the maintained UI metadata for discovery-facing
   activation guidance
+- `references/official-vendor-baseline.md` defines the authoritative
+  Anthropic/OpenAI baseline for vendor-specific behavior
 - `references/skill-quality-baseline.md` holds the generic QA checklist used for
   skill hardening
 - `evals/README.md` summarizes what the eval scenarios defend
 - `evals/evals.json` contains regression scenarios
 - `evals/files/` contains small fixtures used by those scenarios
+- `scripts/verify_skill_contract.py` verifies that the local maintenance
+  contract and its stable fixtures stay aligned
 
 ## Design Principles
 
@@ -178,6 +207,7 @@ This skill is opinionated in a few specific ways:
 - clear scope beats broad ambition
 - reproducible instructions beat abstract process language
 - deterministic QA beats ceremonial QA
+- official vendor rules beat repeated local assumptions
 - self-critical heuristic hardening beats undocumented operator taste
 - a few good edits beat endless meta-optimization
 - no-op is a valid outcome when no real improvement is justified

@@ -4,9 +4,10 @@ description: >
   Improve an existing skill or subagent in place. Use when the user wants to
   tighten activation or scope, reduce context footprint, simplify
   instructions, harden reproducibility, or align evals, deterministic helpers,
-  agent metadata, support-file linkage, `.gitignore`, or scoped IDE inspection
-  exceptions. Do not use it for new-skill creation, repo-wide normalization,
-  or generic cleanup outside the target skill.
+  agent metadata, support-file linkage, `.gitignore`, scoped IDE inspection
+  exceptions, or official Anthropic/OpenAI guidance. Do not use it for
+  new-skill creation, repo-wide normalization, or generic cleanup outside the
+  target skill.
 ---
 
 # Skill Optimization
@@ -19,8 +20,10 @@ When priorities conflict, use this order:
 1. Improve discovery and activation.
 2. Narrow the scope and make non-triggers explicit.
 3. Make instructions shorter, more operational, and more reproducible.
-4. Keep the skill standard-first and isolate vendor-specific notes cleanly.
-5. Touch evals only when that closes a real behavioral gap.
+4. Keep portable guidance standard-first, but treat official Anthropic and
+   OpenAI documentation as binding for vendor-specific behavior.
+5. Isolate vendor-specific notes cleanly.
+6. Touch evals only when that closes a real behavioral gap.
 
 Treat the current skill as input, not authority.
 
@@ -75,8 +78,15 @@ Run the work as a short loop:
 - Prefer workable defaults over process mechanics.
 - Prefer the smallest context footprint that preserves behavior, QA, and
   safety.
+- When the target depends on OpenAI/Codex or Anthropic/Claude behavior,
+  official vendor documentation is the binding quality standard. Local examples
+  and neighboring skills are reference material, not authority.
 - If `agents/openai.yaml` exists, treat it as a maintained activation and UI
   contract, not as decorative metadata.
+- If the target is a Claude Code subagent, treat its YAML frontmatter and
+  current scope as maintained configuration. Do not add `tools`, strip valid
+  Claude fields, or move between `.claude/agents/` and `~/.claude/agents/`
+  unless the intended behavior change actually requires it.
 - Treat no-op as a valid result. Stop when another pass would only improve tone,
   formatting, or wording without changing behavior, determinism, or safety.
 
@@ -84,17 +94,25 @@ Run the work as a short loop:
 
 1. Read the primary skill file first: usually `SKILL.md`, or the target
    markdown file for a standalone subagent.
-2. Read `agents/openai.yaml` early when it exists and activation surface,
+2. If the target is a Claude Code subagent, read its YAML frontmatter and note
+   whether it lives in `.claude/agents/` or `~/.claude/agents/` before editing.
+3. Read `agents/openai.yaml` early when it exists and activation surface,
    default workflow, or local QA maintenance may be in scope.
-3. Check the target skill's local QA surface as relevant: `.gitignore`,
+4. Check the target skill's local QA surface as relevant: `.gitignore`,
    committed `.idea`, `README`, `references/`, `evals/`, and support files.
-4. Start `evals/` with `evals/evals.json` when behavior, scope boundaries, QA
+5. Start `evals/` with `evals/evals.json` when behavior, scope boundaries, QA
    guarantees, or support-file contracts may change.
-5. Open only the support files needed to preserve behavior or validate a real
+6. Read [`references/official-vendor-baseline.md`](references/official-vendor-baseline.md)
+   when vendor-specific instructions, metadata, frontmatter, prompt structure,
+   or delegation behavior may change.
+7. Run `python3 scripts/verify_skill_contract.py` when the target owns that
+   verifier and your edits touch QA contracts, metadata, fixture linkage, or
+   vendor-baseline references.
+8. Open only the support files needed to preserve behavior or validate a real
    contract.
-6. Use external docs only when vendor behavior or the skills standard materially
+9. Use external docs only when vendor behavior or the skills standard materially
    affects the edit.
-7. If your intended change depends on an internal optimization pattern that is
+10. If your intended change depends on an internal optimization pattern that is
    still underspecified in this skill, clarify or narrow that pattern here
    first instead of silently exporting it into the target skill.
 
@@ -107,6 +125,10 @@ Run the work as a short loop:
 - Does it describe user intent instead of the skill's internal process?
 - Does it include clear boundaries or non-triggers so it does not fire on
   generic work?
+- When the target uses OpenAI/Codex or Claude Code semantics, do activation and
+  metadata follow the applicable official vendor docs instead of local folklore?
+- If the target is a Claude Code subagent, does its YAML `description`
+  describe when Claude should delegate to it?
 
 ### 2. Scope and Boundaries
 
@@ -138,12 +160,21 @@ Run the work as a short loop:
   `agents/openai.yaml` still match the trigger surface when present?
 - When `agents/openai.yaml` exists, do `SKILL.md`, `README.md`, or an existing
   verifier treat it as a maintained file when that would otherwise drift?
+- If official Anthropic or OpenAI docs define the relevant behavior, does the
+  target follow those rules before local precedent or adjacent examples?
+- If the target is a Claude Code subagent, do its supported frontmatter fields
+  still match actual behavior and stay distinct from Codex/OpenAI metadata
+  rather than being normalized into it?
 - If `.idea` is committed, are inspection exceptions narrow, scope-based, and
   documented instead of globally suppressing warnings?
 
 Read [`references/skill-quality-baseline.md`](references/skill-quality-baseline.md)
 when the request touches QA structure, determinism, support files, IDE
 exceptions, or agent metadata drift.
+
+Read [`references/official-vendor-baseline.md`](references/official-vendor-baseline.md)
+when the request touches OpenAI/Codex or Anthropic/Claude rules, metadata,
+frontmatter, prompting structure, or delegation behavior.
 
 ### 5. Redundancy and Complexity
 
@@ -196,10 +227,15 @@ Run this loop until no substantial change remains:
 - Use relative file references from the skill root.
 - If you add supporting files, reference them directly from `SKILL.md` instead
   of relying on deep reference chains.
+- If official Anthropic or OpenAI docs define a vendor-specific rule, treat
+  that rule as binding for the target. Do not preserve a conflicting local
+  pattern just because nearby skills already copied it.
 - When comparable mature local skills already ship `agents/openai.yaml`, treat
   that file as an established local maintenance surface, not a speculative
   extra. Add or align it only when the target's real trigger surface supports
   it.
+- For Claude Code subagents, preserve the current scope unless relocation is an
+  explicit part of the requested fix.
 - Keep QA rules generic and content-independent. Prefer a small baseline that
   can be reused across many skills over topic-specific governance.
 - Require at least one machine-checkable quality contract for the target skill.
@@ -207,6 +243,9 @@ Run this loop until no substantial change remains:
   executable verifier or validator with stable fixtures.
 - If the target already has a verifier or contract script, prefer extending it
   to catch `agents/openai.yaml` drift before inventing additional QA layers.
+- When a target-local verifier exists, keep `SKILL.md` or maintainer-facing
+  docs aligned with when to run it and rerun it after contract edits that
+  affect metadata, vendor-baseline references, or stable fixtures.
 - Do not invent repo-wide standards while optimizing one skill. Report broader
   repository issues separately instead of silently widening scope.
 
@@ -214,14 +253,38 @@ Run this loop until no substantial change remains:
 
 - Optimize frontmatter because Codex discovers skills from lightweight
   metadata first.
+- Official OpenAI and Anthropic documentation is the authoritative quality
+  baseline for vendor-specific skill and subagent behavior handled by this
+  skill.
+- Use local examples only after checking the applicable official docs.
+  If local practice conflicts with official docs, align the target to the
+  official rule or report the divergence plainly when a local exception must be
+  preserved.
 - Keep Codex-, Claude-, or other client-specific fields only when they
   materially help, and keep them isolated from portable guidance.
 - If optimizing a Claude Code subagent, preserve its native file format and
   location conventions instead of rewriting it into another tool's layout.
-- Use external docs only when they change the edit: official OpenAI docs,
-  official Anthropic docs, Agent Skills, then Cursor as a portability check.
-  If sources stay inconclusive, make the smallest reasonable decision and note
-  it briefly.
+- For Claude Code subagents, treat Markdown plus YAML frontmatter as native
+  configuration. Preserve supported fields such as `tools`,
+  `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`,
+  `mcpServers`, `hooks`, `memory`, `background`, and `isolation` when they
+  are part of the current contract.
+- Do not assume OpenAI skill metadata and Claude Code subagent frontmatter
+  share the same field surface. In Claude Code, `name` and `description` are
+  required, `tools` is optional, and omitted `tools` inherits the parent tool
+  set.
+- For OpenAI/Codex skills, follow the official Codex skills and prompting docs
+  for structure, activation metadata, progressive disclosure, and eval-backed
+  prompt iteration.
+- For Anthropic Agent Skills, follow the official Agent Skills overview and
+  best-practices docs for required frontmatter, concise `SKILL.md` bodies,
+  description wording, and iterative evaluation.
+- Use external docs only when they change the edit: official OpenAI docs first
+  for OpenAI/Codex behavior, official Anthropic docs first for Claude behavior,
+  then Agent Skills as portability context, then Cursor as a final portability
+  check.
+- If official sources stay silent or inconclusive, make the smallest reasonable
+  decision, note the gap briefly, and do not invent unsupported vendor rules.
 - Treat recurring optimization heuristics as part of this skill's contract, not
   as hidden operator taste. If a heuristic matters repeatedly and is still too
   vague to apply safely, clarify it here before using it to reshape another
@@ -234,6 +297,8 @@ Run this loop until no substantial change remains:
 - Update evals when there is a clear gap around activation boundaries, scope
   control, context footprint, QA baseline behavior, loop termination, or a
   critical workflow expectation.
+- Add or update the smallest scenario needed when the target previously relied
+  on vendor assumptions that conflict with official Anthropic or OpenAI docs.
 - Do not add evals mechanically for `agents/openai.yaml`, `README.md`, or
   verifier-maintenance edits. Add or update them only when the metadata gap
   exposes a real behavior contract that existing scenarios do not already
@@ -252,6 +317,8 @@ Before finishing, confirm:
 - context footprint is lower or explicitly already minimal
 - instructions are simpler and more reproducible
 - generic QA is stronger without repo-wide drift
+- vendor-specific behavior follows applicable official Anthropic/OpenAI
+  guidance or is explicitly documented as an intentional exception
 - remaining ideas are cosmetic rather than behavioral
 
 ## Output

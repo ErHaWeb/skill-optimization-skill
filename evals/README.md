@@ -9,6 +9,7 @@ They cover:
 - smallest-useful edit behavior
 - target-only change discipline
 - generic QA baseline checks
+- vendor-specific alignment to official Anthropic/OpenAI rules
 - loop termination when only cosmetic changes remain
 - self-critical hardening of vague recurring optimization heuristics
 - agent metadata drift and local tool-artifact hygiene
@@ -21,8 +22,10 @@ When QA guidance changes, prefer scenarios that exercise:
 - missing or weak machine-checkable QA contracts
 - token-heavy `SKILL.md` files with mandatory broad reads or verbose defaults
 - support files that are present but not linked from `SKILL.md`
+- vendor guidance that conflicts with official Anthropic/OpenAI docs
 - overly broad `.idea` inspection suppression
 - stale `agents/openai.yaml` metadata after trigger-surface changes
+- Claude Code subagent scope or frontmatter drift
 - unignored local worktree mirrors such as `/.claude/worktrees/`
 - missing Git context
 - justified no-op after a re-review pass

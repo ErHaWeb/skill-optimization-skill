@@ -96,16 +96,18 @@
     },
     {
       "id": 8,
-      "prompt": "Tighten the standalone Claude Code subagent at /tmp/claude-subagent/release-notes-subagent.md so it triggers more reliably and stays narrowly scoped.",
-      "expected_output": "A focused optimization of the target subagent markdown file without assuming that a SKILL.md must exist.",
+      "prompt": "Tighten the project Claude Code subagent at /tmp/claude-subagent/.claude/agents/release-notes-subagent.md so it triggers more reliably and stays narrowly scoped. Preserve Claude Code conventions, keep the current scope, and do not add tool allowlists unless the actual behavior requires them.",
+      "expected_output": "A focused optimization of the target Claude Code subagent markdown file that preserves project-scope location, keeps valid frontmatter intact, and does not assume that a SKILL.md or OpenAI metadata file must exist.",
       "files": [
         "files/claude-subagent/"
       ],
       "assertions": [
         "Reads the target subagent markdown file directly",
+        "Recognizes .claude/agents as a Claude Code project-scope location and does not relocate the subagent without an explicit request",
         "Does not assume the optimization target must be SKILL.md",
-        "Preserves Claude-specific subagent structure while tightening activation or scope",
-        "Keeps changes focused instead of rewriting the subagent into a different skill format"
+        "Preserves Claude-specific subagent structure and valid frontmatter while tightening activation or scope",
+        "Treats the Claude Code tools field as optional rather than mandatory boilerplate",
+        "Keeps changes focused instead of rewriting the subagent into a different skill format or metadata system"
       ]
     },
     {
@@ -226,6 +228,21 @@
         "Does not degrade the target skill by applying a vague undocumented pattern",
         "Clarifies or reports the missing optimization standard before relying on it",
         "Keeps target-skill edits limited to clearly justified improvements"
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Optimize the skill at /tmp/test-skill so its Codex and Claude-specific guidance matches official OpenAI and Anthropic documentation instead of copied local assumptions. Keep the work target-local and do not add extra process.",
+      "expected_output": "A focused optimization that corrects unsupported cross-vendor assumptions, treats official vendor docs as authoritative for vendor-specific behavior, and keeps the rest of the edit set minimal.",
+      "files": [
+        "files/test-skill/"
+      ],
+      "assertions": [
+        "Treats official Anthropic and OpenAI documentation as the authority for vendor-specific behavior when the edit depends on those semantics",
+        "Corrects unsupported claims that OpenAI skill metadata and Claude subagent frontmatter are interchangeable",
+        "Does not require a Claude Code tools field when unrestricted inheritance is valid",
+        "Keeps local examples and neighboring skills subordinate to official vendor rules",
+        "Avoids adding extra process or repo-wide cleanup while making the vendor-specific fix"
       ]
     }
   ]

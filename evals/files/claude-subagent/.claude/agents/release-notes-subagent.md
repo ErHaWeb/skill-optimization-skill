@@ -3,7 +3,8 @@ name: release-notes-subagent
 description: >
   Help with release notes, changelogs, weekly summaries, project updates, and
   communication tasks across different teams and repositories.
-tools: Read, Edit
+model: haiku
+maxTurns: 3
 ---
 
 # Release Notes Subagent
