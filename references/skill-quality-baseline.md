@@ -103,8 +103,8 @@ Do not add `.idea` just to satisfy a checklist.
 
 ## Hygiene Rules
 
-- Ignore or remove editor noise such as `.DS_Store`, workspace files, caches,
-  or dependency directories when they can appear locally.
+- Ignore or remove workspace files, caches, or dependency directories when
+  they can appear locally.
 - Treat agent-generated worktree mirrors such as `/.claude/worktrees/` as local
   artifacts unless the project intentionally versions them.
 - Do not confuse intentional Claude Code project config such as

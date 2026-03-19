@@ -165,7 +165,6 @@ def collect_quality_gaps(
     script_paths: list[str],
     script_paths_mentioned: list[str],
     deterministic_terms: list[str],
-    ds_store_paths: list[str],
     node_modules_paths: list[str],
     claude_worktrees_paths: list[str],
     git_root: Path | None,
@@ -192,9 +191,6 @@ def collect_quality_gaps(
 
     if deterministic_terms and script_paths and not script_paths_mentioned:
         gaps.append("Deterministic workflow terms appear in primary instructions, but no script path is referenced")
-
-    if ds_store_paths:
-        gaps.append(".DS_Store artifacts present")
 
     if node_modules_paths:
         gaps.append("node_modules/ directories present")
@@ -232,7 +228,6 @@ def inspect(target: Path) -> dict[str, object]:
     ]
     machine_checkable_contracts = collect_machine_checkable_contracts(inspection_root, script_paths)
     deterministic_terms = collect_deterministic_terms(primary_text)
-    ds_store_paths = collect_relative_paths(inspection_root, ".DS_Store", want_dirs=False)
     node_modules_paths = collect_relative_paths(inspection_root, "node_modules", want_dirs=True)
     claude_worktrees_paths = collect_relative_paths(inspection_root, "worktrees", want_dirs=True)
     claude_worktrees_paths = [
@@ -248,7 +243,6 @@ def inspect(target: Path) -> dict[str, object]:
         script_paths=script_paths,
         script_paths_mentioned=script_paths_mentioned,
         deterministic_terms=deterministic_terms,
-        ds_store_paths=ds_store_paths,
         node_modules_paths=node_modules_paths,
         claude_worktrees_paths=claude_worktrees_paths,
         git_root=git_root,
@@ -271,7 +265,6 @@ def inspect(target: Path) -> dict[str, object]:
         "script_paths_mentioned": script_paths_mentioned,
         "deterministic_workflow_terms": deterministic_terms,
         "local_artifacts": {
-            "ds_store_paths": ds_store_paths,
             "node_modules_paths": node_modules_paths,
             "claude_worktrees_paths": claude_worktrees_paths,
         },

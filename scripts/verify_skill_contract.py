@@ -33,7 +33,6 @@ FORBIDDEN_FILES = [
 ]
 
 REQUIRED_GITIGNORE_ENTRIES = {
-    ".DS_Store",
     ".idea",
     "__pycache__/",
 }
@@ -110,15 +109,6 @@ def verify_files_exist(errors: list[str]) -> None:
 
     for relative_path in FORBIDDEN_FILES:
         require(not (ROOT / relative_path).exists(), f"Unexpected stale file present: {relative_path}", errors)
-
-
-def verify_local_artifacts(errors: list[str]) -> None:
-    ds_store_paths = [
-        path.relative_to(ROOT).as_posix()
-        for path in ROOT.rglob(".DS_Store")
-        if ".git" not in path.parts
-    ]
-    require(not ds_store_paths, f"Unexpected .DS_Store artifacts present: {', '.join(ds_store_paths)}", errors)
 
 
 def verify_gitignore(errors: list[str]) -> None:
@@ -429,7 +419,6 @@ def main() -> int:
             print(f"ERROR: {error}")
         return 1
 
-    verify_local_artifacts(errors)
     verify_gitignore(errors)
     verify_references(errors)
     verify_markdown_links(errors)
