@@ -76,7 +76,7 @@ README_LINK_REQUIRED_PATHS = [
     "scripts/verify_skill_contract.py",
 ]
 
-EXPECTED_EVAL_IDS = set(range(1, 20))
+EXPECTED_EVAL_IDS = set(range(1, 21))
 
 OFFICIAL_URLS = [
     "https://developers.openai.com/codex/skills",

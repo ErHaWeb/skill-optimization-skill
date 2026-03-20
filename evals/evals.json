@@ -260,6 +260,20 @@
         "Keeps model-written instructions for orchestration, interpretation, or unresolved judgment instead of reenacting the deterministic transformation",
         "Keeps changes target-local and does not invent heavy infrastructure"
       ]
+    },
+    {
+      "id": 20,
+      "prompt": "Tighten the skill at /tmp/test-skill after a tricky behavior change and validate the revision with a subagent if that helps, but do not leak your diagnosis or intended fix into the validation prompt.",
+      "expected_output": "A focused optimization that treats forward-testing as an evaluation surface, uses minimal-context validation when it materially reduces uncertainty, and avoids leaking the intended answer.",
+      "files": [
+        "files/test-skill/"
+      ],
+      "assertions": [
+        "Treats forward-testing as optional validation for a tricky existing-skill revision rather than as new-skill creation work",
+        "Passes raw artifacts or a user-like request instead of the diagnosis or intended fix when validating with a subagent",
+        "Avoids leaking the expected answer into the forward-test prompt",
+        "Asks before forward-testing if the run would be long, approval-heavy, or touch live systems"
+      ]
     }
   ]
 }

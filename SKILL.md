@@ -4,11 +4,11 @@ description: >
   Improve an existing skill or subagent in place. Use when the user wants to
   tighten activation or scope, reduce context footprint, simplify
   instructions, harden reproducibility, replace scriptable probabilistic
-  workflows with deterministic scripts or helpers, or align evals, agent
-  metadata, support-file linkage, `.gitignore`, scoped IDE inspection
-  exceptions, or official Anthropic/OpenAI guidance. Do not use it for
-  new-skill creation, repo-wide normalization, or generic cleanup outside the
-  target skill.
+  workflows with deterministic scripts or helpers, validate tricky revisions
+  with minimal-context forward-testing, or align evals, agent metadata,
+  support-file linkage, `.gitignore`, scoped IDE inspection exceptions, or
+  official Anthropic/OpenAI guidance. Do not use it for new-skill creation,
+  repo-wide normalization, or generic cleanup outside the target skill.
 ---
 
 # Skill Optimization
@@ -57,6 +57,8 @@ Run the work as a short loop:
 - The skill leaves repeatable work such as parsing, normalization, validation,
   export, packaging, or report assembly to model judgment even though a
   target-local script or wrapper could perform it deterministically.
+- The user wants to improve a skill after real usage, or the revised skill
+  should be forward-tested without leaking the intended answer or fix.
 - The user says things like `review my skill`, `make this skill better`,
   `tighten this agent`, or `clean up this skill`.
 
@@ -104,6 +106,13 @@ Run the work as a short loop:
   current scope as maintained configuration. Do not add `tools`, strip valid
   Claude fields, or move between `.claude/agents/` and `~/.claude/agents/`
   unless the intended behavior change actually requires it.
+- After substantial revisions, or when hidden regressions remain plausible,
+  forward-test with subagents when available. Treat that as an evaluation
+  surface: pass raw artifacts and a user-like task with the minimum
+  task-local context needed, and do not leak your diagnosis, intended fix, or
+  expected answer unless the validation specifically requires it.
+- If forward-testing would be long-running, require extra approvals, or touch
+  live systems, ask before doing it.
 - Treat no-op as a valid result. Stop when another pass would only improve tone,
   formatting, or wording without changing behavior, determinism, or safety.
 
@@ -258,6 +267,8 @@ Run this loop until no substantial change remains:
    small target-local script or wrapper plus explicit invocation guidance over
    more prompt prose.
 4. Re-read the edited files against the same checklist.
+   If the revision changes behavior materially or the skill is tricky,
+   forward-test it with minimal leaked context when available.
    Stop if the next pass would only rephrase, reorder, or add meta commentary.
 5. Report the final state compactly.
    Name the material gains, the files changed, remaining risks, and say plainly
@@ -362,6 +373,8 @@ Run this loop until no substantial change remains:
 - Add or update the smallest scenario needed when a target should replace a
   scriptable probabilistic workflow with a deterministic script or wrapper
   contract.
+- Add or update the smallest scenario needed when revised behavior should be
+  validated through minimal-context forward-testing instead of answer leakage.
 - Do not add evals mechanically for `agents/openai.yaml`, `README.md`, or
   verifier-maintenance edits. Add or update them only when the metadata gap
   exposes a real behavior contract that existing scenarios do not already
